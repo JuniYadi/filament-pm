@@ -39,7 +39,7 @@ class DocumentsTable
                 SelectFilter::make('project_id')
                     ->relationship('project', 'name')
                     ->label('Project')
-                    ->nullable(),
+                    ->placeholder('All Projects'),
             ])
             ->recordActions([
                 EditAction::make(),
