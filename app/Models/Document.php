@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\App;
+use Overtrue\LaravelVersionable\Versionable;
+use Overtrue\LaravelVersionable\VersionStrategy;
 
 class Document extends Model
 {
-    use HasFactory;
+    use HasFactory, Versionable;
 
     protected $fillable = [
         'created_by',
@@ -22,6 +24,21 @@ class Document extends Model
         'content',
         'embedding',
     ];
+
+    /**
+     * Attributes to track for versioning.
+     * We track title and content since these are the main editable fields.
+     */
+    protected array $versionable = [
+        'title',
+        'content',
+    ];
+
+    /**
+     * Use SNAPSHOT strategy for reliable version tracking.
+     * DIFF strategy has known bug reports.
+     */
+    protected $versionStrategy = VersionStrategy::SNAPSHOT;
 
     protected static function booted(): void
     {
