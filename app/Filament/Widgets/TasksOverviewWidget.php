@@ -20,7 +20,7 @@ class TasksOverviewWidget extends BaseWidget
         $query = Task::query();
 
         if (! $user->hasRole('Product Manager')) {
-            $query->whereIn('project_id', $user->projects()->pluck('id'));
+            $query->whereIn('project_id', $user->allProjects()->pluck('id'));
         }
 
         $total = $query->count();

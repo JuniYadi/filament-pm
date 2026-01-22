@@ -59,13 +59,26 @@ class User extends Authenticatable
 
     /**
      * Get all projects the user is a member of (including owned).
+     * Uses a scope to get both owned and member projects.
      */
-    public function projects(): BelongsToMany
+    public function projects()
     {
+        // For the widget, we'll use a scope on Project model instead
+        // This relationship is for the pivot table only
         return $this->belongsToMany(Project::class, 'project_members')
             ->withPivot('role')
-            ->withTimestamps()
-            ->union($this->ownedProjects()->getQuery());
+            ->withTimestamps();
+    }
+
+    /**
+     * Scope to get all accessible projects (owned + member of).
+     */
+    public function allProjects()
+    {
+        $ownedIds = $this->ownedProjects()->pluck('id');
+        $memberIds = $this->projects()->pluck('id');
+
+        return Project::whereIn('id', $ownedIds->merge($memberIds)->unique());
     }
 
     /**
