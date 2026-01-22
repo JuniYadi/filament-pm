@@ -4,6 +4,8 @@ namespace App\Filament\Pages;
 
 use App\Models\Project;
 use Filament\Pages\Page;
+use Filament\Panel;
+use Illuminate\Support\Facades\Route;
 
 class ProjectKanban extends Page
 {
@@ -18,8 +20,11 @@ class ProjectKanban extends Page
         $this->record = $record;
     }
 
-    public static function route(): string
+    public static function routes(Panel $panel): void
     {
-        return '/projects/{record}/kanban';
+        Route::get('/projects/{record}/kanban', static::class)
+            ->middleware(static::getRouteMiddleware($panel))
+            ->withoutMiddleware(static::getWithoutRouteMiddleware($panel))
+            ->name(static::getRelativeRouteName($panel));
     }
 }
