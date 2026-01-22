@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TaskStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,5 +48,22 @@ class Project extends Model
         return $this->belongsToMany(User::class, 'project_members')
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the Kanban statuses for this project.
+     * Returns custom workflow if set, otherwise returns default statuses.
+     *
+     * @return array<int, string>
+     */
+    public function getKanbanStatuses(): array
+    {
+        if (empty($this->status_workflow)) {
+            return collect(TaskStatus::ordered())
+                ->map(fn ($status) => $status->value)
+                ->toArray();
+        }
+
+        return $this->status_workflow;
     }
 }
