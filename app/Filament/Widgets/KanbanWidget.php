@@ -8,6 +8,8 @@ use Filament\Widgets\Widget;
 
 class KanbanWidget extends Widget
 {
+    protected static bool $isDiscovered = false;
+
     protected string $view = 'filament.widgets.kanban-board';
 
     protected int|string|array $columnSpan = 'full';
@@ -55,6 +57,15 @@ class KanbanWidget extends Widget
                 ])
                 ->values()
                 ->toArray();
+        }
+    }
+
+    public function updateTaskStatus(int $taskId, string $status): void
+    {
+        $task = Task::find($taskId);
+        if ($task && $this->canUpdateTask($task)) {
+            $task->update(['status' => $status]);
+            $this->loadColumns();
         }
     }
 
