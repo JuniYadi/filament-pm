@@ -12,9 +12,12 @@ class ProjectKanban extends Page
 
     protected static string $resource = ProjectResource::class;
 
-    protected static string $view = 'filament.pages.project-kanban';
-
     protected static bool $shouldRegisterNavigation = false;
+
+    public static function getView(): string
+    {
+        return 'filament.pages.project-kanban';
+    }
 
     public function mount(int|string $record): void
     {
