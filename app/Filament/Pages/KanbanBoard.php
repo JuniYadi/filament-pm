@@ -16,6 +16,6 @@ class KanbanBoard extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->can('view any kanban board') ?? true;
+        return true;
     }
 }
