@@ -1,3 +1,4 @@
+@vite(['resources/css/kanban.css'])
 <div x-data="kanbanBoard({{ json_encode($statuses) }}, @entangle('columns'))"
      class="kanban-board">
     <div class="flex gap-4 overflow-x-auto pb-4">
