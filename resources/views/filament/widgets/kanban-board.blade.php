@@ -1,5 +1,4 @@
 <div x-data="kanbanBoard({{ json_encode($statuses) }}, @entangle('columns'))"
-     x-init="initBoard()"
      class="kanban-board">
     <div class="flex gap-4 overflow-x-auto pb-4">
         @foreach($statuses as $status)
@@ -26,7 +25,7 @@
                             </h4>
                             @if($task['description'])
                                 <p class="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">
-                                    {{ Str::limit($task['description'], 100) }}
+                                    {{ \Illuminate\Support\Str::limit($task['description'], 100) }}
                                 </p>
                             @endif
                             @if($task['assigned_to'])

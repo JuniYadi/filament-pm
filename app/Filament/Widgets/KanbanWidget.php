@@ -39,14 +39,20 @@ class KanbanWidget extends Widget
     protected function loadColumns(): void
     {
         $query = $this->project
-            ? Task::forKanban($this->project)
-            : Task::forGlobalKanban();
+            ? Task::forKanban($this->project)->with(['assignedTo'])
+            : Task::forGlobalKanban()->with(['assignedTo']);
 
         $tasks = $query->get();
 
         foreach ($this->statuses as $status) {
             $this->columns[$status] = $tasks
                 ->where('status', $status)
+                ->map(fn ($task) => [
+                    'id' => $task->id,
+                    'title' => $task->title,
+                    'description' => $task->description,
+                    'assigned_to' => $task->assignedTo?->name,
+                ])
                 ->values()
                 ->toArray();
         }
@@ -69,6 +75,6 @@ class KanbanWidget extends Widget
 
     protected function canUpdateTask(Task $task): bool
     {
-        return true; // TODO: Add authorization
+        return auth()->check() && auth()->user()->can('update', $task);
     }
 }
