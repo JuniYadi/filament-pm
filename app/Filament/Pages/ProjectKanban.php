@@ -9,7 +9,7 @@ class ProjectKanban extends Page
 {
     use InteractsWithRecord;
 
-    protected static string $view = 'filament.pages.project-kanban';
+    protected string $view = 'filament.pages.project-kanban';
 
     protected static bool $shouldRegisterNavigation = false;
 
