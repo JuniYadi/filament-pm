@@ -17,4 +17,9 @@ class ProjectKanban extends Page
     {
         $this->record = $record;
     }
+
+    public static function route(): string
+    {
+        return '/projects/{record}/kanban';
+    }
 }
