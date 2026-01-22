@@ -1,8 +1,10 @@
-<div x-data="{ statuses: {{ json_encode($statuses) }}, columns: @entangle('columns') }" class="kanban-board">
+<div class="kanban-board">
     <div class="flex gap-4 overflow-x-auto pb-4">
         @foreach($statuses as $status)
             <div class="kanban-column min-w-[300px] w-80 flex-shrink-0 bg-gray-50 dark:bg-gray-800 rounded-lg p-4"
-                 data-status="{{ $status }}">
+                 data-status="{{ $status }}"
+                 ondrop="drop(event, '{{ $status }}')"
+                 ondragover="allowDrop(event)">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-semibold text-gray-900 dark:text-gray-100">
                         {{ ucfirst(str_replace('_', ' ', $status)) }}
@@ -12,13 +14,14 @@
                     </span>
                 </div>
 
-                <div class="kanban-tasks space-y-2 min-h-[200px]"
-                     data-status="{{ $status }}"
-                     wire:sortable
-                     wire:sortable-end="updateTaskOrder">
+                <div class="kanban-tasks space-y-2 min-h-[200px]">
                     @foreach(($columns[$status] ?? []) as $task)
-                        <div wire:sortable.item="{{ $task['id'] }}"
-                             class="kanban-task-card bg-white dark:bg-gray-900 p-3 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 cursor-move hover:shadow-md transition-shadow">
+                        <div
+                            draggable="true"
+                            ondragstart="drag(event, {{ $task['id'] }})"
+                            data-id="{{ $task['id'] }}"
+                            class="kanban-task-card bg-white dark:bg-gray-900 p-3 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 cursor-move hover:shadow-md transition-shadow"
+                        >
                             <h4 class="font-medium text-sm text-gray-900 dark:text-gray-100 mb-2">
                                 {{ $task['title'] }}
                             </h4>
@@ -41,3 +44,27 @@
         @endforeach
     </div>
 </div>
+
+<script>
+    function drag(event, taskId) {
+        event.dataTransfer.setData("taskId", taskId);
+        event.target.classList.add('opacity-50');
+    }
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drop(event, status) {
+        event.preventDefault();
+        const taskId = event.dataTransfer.getData("taskId");
+
+        // Remove opacity from all cards
+        document.querySelectorAll('.kanban-task-card').forEach(card => {
+            card.classList.remove('opacity-50');
+        });
+
+        // Call Livewire method to update status
+        @this.updateTaskStatus(taskId, status);
+    }
+</script>
