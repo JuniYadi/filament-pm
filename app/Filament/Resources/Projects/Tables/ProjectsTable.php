@@ -40,7 +40,7 @@ class ProjectsTable
                 Action::make('kanban')
                     ->label('Kanban')
                     ->icon('heroicon-o-view-columns')
-                    ->url(fn (\App\Models\Project $record) => \App\Filament\Resources\Projects\ProjectResource::getUrl('kanban', ['record' => $record])),
+                    ->url(fn (\App\Models\Project $record) => route('filament.admin.resources.projects.{record}.kanban', ['record' => $record])),
                 EditAction::make(),
                 DeleteAction::make(),
             ]);
