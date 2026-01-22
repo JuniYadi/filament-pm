@@ -70,11 +70,11 @@ class TasksRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'Backlog' => 'gray',
-                        'To Do' => 'warning',
-                        'In Progress' => 'info',
-                        'Review' => 'primary',
-                        'Done' => 'success',
+                        'backlog' => 'gray',
+                        'todo' => 'warning',
+                        'in_progress' => 'info',
+                        'review' => 'primary',
+                        'done' => 'success',
                     })
                     ->sortable(),
 
