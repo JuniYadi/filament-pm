@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit;
+
 use App\Enums\TaskStatus;
 use PHPUnit\Framework\TestCase;
 
