@@ -2,13 +2,14 @@
 
 namespace App\Filament\Pages;
 
+use BackedEnum;
 use Filament\Pages\Page;
 
 class KanbanBoard extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-queue-list';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-queue-list';
 
-    protected static string $view = 'filament.pages.kanban-board';
+    protected string $view = 'filament.pages.kanban-board';
 
     protected static ?string $navigationLabel = 'Kanban Board';
 

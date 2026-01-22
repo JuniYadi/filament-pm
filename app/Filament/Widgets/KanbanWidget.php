@@ -8,7 +8,7 @@ use Filament\Widgets\Widget;
 
 class KanbanWidget extends Widget
 {
-    protected static string $view = 'filament.widgets.kanban-board';
+    protected string $view = 'filament.widgets.kanban-board';
 
     protected int|string|array $columnSpan = 'full';
 

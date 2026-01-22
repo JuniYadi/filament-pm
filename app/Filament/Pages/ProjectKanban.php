@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 class ProjectKanban extends Page
 {
-    protected static string $view = 'filament.pages.project-kanban';
+    protected string $view = 'filament.pages.project-kanban';
 
     protected static bool $shouldRegisterNavigation = false;
 

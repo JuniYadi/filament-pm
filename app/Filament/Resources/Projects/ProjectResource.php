@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Projects;
 
-use App\Filament\Pages\ProjectKanban;
 use App\Filament\Resources\Projects\Pages\CreateProject;
 use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
@@ -47,7 +46,6 @@ class ProjectResource extends Resource
             'index' => ListProjects::route('/'),
             'create' => CreateProject::route('/create'),
             'edit' => EditProject::route('/{record}/edit'),
-            'kanban' => ProjectKanban::route('/{record}/kanban'),
         ];
     }
 }
