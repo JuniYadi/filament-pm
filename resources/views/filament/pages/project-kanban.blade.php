@@ -17,6 +17,6 @@
             </x-filament::link>
         </div>
 
-        {{ \App\Filament\Widgets\KanbanWidget::make()->projectSlug($record->slug) }}
+        @livewire(\App\Filament\Widgets\KanbanWidget::class, ['projectSlug' => $record->slug])
     </div>
 </x-filament-panels::page>
