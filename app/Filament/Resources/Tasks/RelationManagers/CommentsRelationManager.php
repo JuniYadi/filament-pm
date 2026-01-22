@@ -58,7 +58,7 @@ class CommentsRelationManager extends RelationManager
             ->defaultSort('created_at', 'desc');
     }
 
-    public static function canViewForRecord(Model $ownerRecord): bool
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return true;
     }

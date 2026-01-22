@@ -103,7 +103,7 @@ class TasksRelationManager extends RelationManager
             ->defaultSort('order', 'asc');
     }
 
-    public static function canViewForRecord(Model $ownerRecord): bool
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return true;
     }

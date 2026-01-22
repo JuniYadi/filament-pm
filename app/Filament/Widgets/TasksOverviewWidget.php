@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class TasksOverviewWidget extends BaseWidget
 {
-    protected static ?string $pollingInterval = '15s';
+    protected ?string $pollingInterval = '15s';
 
     protected static bool $isLazy = false;
 
