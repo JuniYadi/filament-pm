@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -36,6 +37,10 @@ class ProjectsTable
                 //
             ])
             ->recordActions([
+                Action::make('kanban')
+                    ->label('Kanban')
+                    ->icon('heroicon-o-view-columns')
+                    ->url(fn (\App\Models\Project $record) => \App\Filament\Resources\Projects\ProjectResource::getUrl('kanban', ['record' => $record])),
                 EditAction::make(),
                 DeleteAction::make(),
             ]);
