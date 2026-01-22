@@ -1,7 +1,9 @@
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/mansoor/filament-versionable/resources/css/plugin.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
+@source '../../../../vendor/mansoor/filament-versionable/resources/**/*.blade.php';
 
 /* Kanban Board Styles */
 .kanban-board {
