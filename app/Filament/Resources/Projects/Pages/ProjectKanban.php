@@ -14,7 +14,7 @@ class ProjectKanban extends Page
 
     protected static bool $shouldRegisterNavigation = false;
 
-    public static function getView(): string
+    public function getView(): string
     {
         return 'filament.pages.project-kanban';
     }
