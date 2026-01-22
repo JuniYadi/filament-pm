@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Filament\Resources\Tasks\Schemas;
 
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\RichEditor\MentionProvider;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class TaskForm
@@ -32,16 +32,30 @@ class TaskForm
                             ->maxLength(255)
                             ->columnSpanFull(),
 
-                        Textarea::make('description')
-                            ->rows(3)
+                        RichEditor::make('description')
+                            ->columns(10)
+                            ->mentions([
+                                MentionProvider::make('@')
+                                    ->items([
+                                        1 => 'Jane Doe',
+                                        2 => 'John Smith',
+                                    ]),
+                                MentionProvider::make('#')
+                                    ->items([
+                                        'bug'     => 'Bug',
+                                        'feature' => 'Feature',
+                                    ]),
+
+                            ])
+                            ->extraInputAttributes(['style' => 'min-height: 20rem; max-height: 50vh; overflow-y: auto;'])
                             ->columnSpanFull(),
 
                         Select::make('status')
                             ->options([
-                                'todo' => 'Todo',
+                                'todo'        => 'Todo',
                                 'in_progress' => 'In Progress',
-                                'review' => 'Review',
-                                'done' => 'Done',
+                                'review'      => 'Review',
+                                'done'        => 'Done',
                             ])
                             ->default('todo')
                             ->required(),
@@ -51,7 +65,8 @@ class TaskForm
                             ->default(0)
                             ->minValue(0),
                     ])
-                    ->columns(2),
+                    ->columns(2)
+                    ->columnSpanFull(),
             ]);
     }
 }
