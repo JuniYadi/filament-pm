@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests\Unit\Models;
+
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
@@ -14,6 +16,12 @@ class TaskTest extends TestCase
     {
         $user = User::factory()->create();
         $project = Project::factory()->create(['owner_id' => $user->id]);
+
+        Task::factory()->create([
+            'project_id' => $project->id,
+            'status' => 'backlog',
+            'order' => 5,
+        ]);
 
         Task::factory()->create([
             'project_id' => $project->id,
@@ -35,10 +43,9 @@ class TaskTest extends TestCase
 
         $tasks = Task::forKanban($project)->get();
 
-        // Should be ordered by status first, then by order within status
-        // 'done' comes before 'todo' alphabetically
-        $this->assertEquals('done', $tasks->first()->status);
-        $this->assertEquals(99, $tasks->first()->order);
+        // Should be ordered by Kanban workflow status first, then by order within status
+        $this->assertEquals('backlog', $tasks->first()->status);
+        $this->assertEquals(5, $tasks->first()->order);
 
         // Within 'todo' status, should be ordered by order column
         $todoTasks = $tasks->filter(fn ($task) => $task->status === 'todo');

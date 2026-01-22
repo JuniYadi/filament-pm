@@ -58,7 +58,14 @@ class Task extends Model
     public function scopeForKanban(Builder $query, Project $project): Builder
     {
         return $query->where('project_id', $project->id)
-            ->orderBy('status')
+            ->orderByRaw("CASE status
+                WHEN 'backlog' THEN 1
+                WHEN 'todo' THEN 2
+                WHEN 'in_progress' THEN 3
+                WHEN 'review' THEN 4
+                WHEN 'done' THEN 5
+                ELSE 6
+            END")
             ->orderBy('order');
     }
 
@@ -68,7 +75,14 @@ class Task extends Model
     public function scopeForGlobalKanban(Builder $query): Builder
     {
         return $query->with(['project', 'assignedTo'])
-            ->orderBy('status')
+            ->orderByRaw("CASE status
+                WHEN 'backlog' THEN 1
+                WHEN 'todo' THEN 2
+                WHEN 'in_progress' THEN 3
+                WHEN 'review' THEN 4
+                WHEN 'done' THEN 5
+                ELSE 6
+            END")
             ->orderBy('order');
     }
 }
