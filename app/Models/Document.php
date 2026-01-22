@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\EmbeddingService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -48,19 +49,24 @@ class Document extends Model
         return $this->belongsTo(Project::class);
     }
 
-    // Allow documents to be linked to any entity (Task, Project, etc.)
-    public function linkedEntities(): MorphToMany
+    public function tasks(): MorphToMany
     {
         return $this->morphedByMany(
-            related: '*',
+            related: Task::class,
             name: 'documentable',
             table: 'documentables',
         );
     }
 
-    /**
-     * Generate and store embedding for this document.
-     */
+    public function projects(): MorphToMany
+    {
+        return $this->morphedByMany(
+            related: Project::class,
+            name: 'documentable',
+            table: 'documentables',
+        );
+    }
+
     public function generateEmbedding(): void
     {
         /** @var EmbeddingService $service */
@@ -74,14 +80,7 @@ class Document extends Model
         }
     }
 
-    /**
-     * Find similar documents using cosine similarity.
-     *
-     * @param string $query
-     * @param int $limit
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function findSimilar(string $query, int $limit = 5): \Illuminate\Database\Eloquent\Collection
+    public function findSimilar(string $query, int $limit = 5): Collection
     {
         /** @var EmbeddingService $service */
         $service = App::make(EmbeddingService::class);
@@ -92,22 +91,29 @@ class Document extends Model
             return $this->newQuery()->limit($limit)->get();
         }
 
-        return self::query()
+        $documents = self::query()
             ->whereNotNull('embedding')
             ->where('id', '!=', $this->id)
-            ->get()
-            ->mapWithKeys(function (Document $document) use ($service, $queryEmbedding) {
-                $similarity = $document->embedding
-                    ? $service->cosineSimilarity($queryEmbedding, $document->embedding)
-                    : 0;
+            ->get();
 
-                return [$document->id => [
-                    'document' => $document,
-                    'similarity' => $similarity,
-                ];
-            })
+        $scored = $documents->mapWithKeys(function (Document $document) use ($service, $queryEmbedding) {
+            $similarity = $document->embedding
+                ? $service->cosineSimilarity($queryEmbedding, $document->embedding)
+                : 0;
+
+            return [$document->id => [
+                'document' => $document,
+                'similarity' => $similarity,
+            ]];
+        });
+
+        $results = collect($scored)
             ->sortByDesc('similarity')
             ->take($limit)
-            ->map(fn (array $item) => $item['document']);
+            ->map(fn (array $item) => $item['document'])
+            ->values()
+            ->all();
+
+        return new Collection($results);
     }
 }
