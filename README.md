@@ -1,59 +1,113 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Filament PM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A project management system built with Laravel 12, Filament 4, and AI-powered semantic search.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Project Management**
+  - Create and manage projects with customizable status workflows
+  - Add team members with role-based access (Product Manager, Developer, Viewer)
+  - Track tasks with Kanban-style status management
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Task Management**
+  - Create tasks within projects
+  - Assign tasks to team members
+  - Track task status (Backlog, To Do, In Progress, Review, Done)
+  - Add comments for collaboration
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Document Management**
+  - Create standalone or project-linked documents
+  - Markdown support for rich content
+  - AI-powered semantic search using OpenAI embeddings
 
-## Learning Laravel
+- **Role-Based Access Control**
+  - Powered by Filament Shield and Spatie Laravel Permission
+  - Granular permissions for Projects, Tasks, Documents, and Comments
+  - Three default roles: Product Manager, Developer, Viewer
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **PHP**: 8.5.0
+- **Laravel**: 12.48.1
+- **Filament**: 4.5.3 (New modular structure with separate Schema/Table classes)
+- **Filament Shield**: 4.1.0 (Role-based permissions)
+- **Database**: SQLite (configurable)
+- **AI**: OpenAI text-embedding-3-small for semantic search
 
-## Laravel Sponsors
+## Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# Install dependencies
+composer install
+npm install
 
-### Premium Partners
+# Configure environment
+cp .env.example .env
+php artisan key:generate
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Set up OpenAI API key (optional, for semantic search)
+# Add to .env: OPENAI_API_KEY=your_key_here
 
-## Contributing
+# Run migrations
+php artisan migrate
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Seed default roles
+php artisan db:seed --class=RoleSeeder
 
-## Code of Conduct
+# Build frontend assets
+npm run build
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Run development server
+composer run dev
+```
 
-## Security Vulnerabilities
+## Usage
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Access the admin panel** at `/admin`
+2. **Create a project** with a customizable status workflow
+3. **Add team members** to projects with specific roles
+4. **Create tasks** and assign them to team members
+5. **Create documents** - embeddings are generated automatically if OpenAI API key is configured
+
+## Semantic Search
+
+Documents can be searched semantically using AI embeddings:
+
+```php
+// Find similar documents to a query
+$similarDocuments = $document->findSimilar('search query', limit: 5);
+```
+
+This uses cosine similarity on OpenAI embeddings to find conceptually similar documents.
+
+## Testing
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test suite
+php artisan test tests/Feature/ProjectTest.php
+```
+
+## Project Structure
+
+```
+app/
+├── Models/           # Eloquent models (Project, Task, Document, Comment)
+├── Policies/         # Authorization policies
+├── Services/         # EmbeddingService for AI features
+└── Filament/
+    ├── Resources/    # Filament resources (modular structure)
+    │   ├── Projects/
+    │   │   ├── RelationManagers/
+    │   │   ├── Schemas/
+    │   │   └── Tables/
+    │   ├── Tasks/
+    │   └── Users/
+    └── Widgets/      # Dashboard widgets
+```
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The MIT License (MIT). Please see [License File](LICENSE) for more information.
