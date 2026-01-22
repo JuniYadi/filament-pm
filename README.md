@@ -1,6 +1,16 @@
 # Filament PM
 
-A project management system built with Laravel 12, Filament 4, and AI-powered semantic search.
+A self-hosted project management and documentation platform built as a lightweight, powerful alternative to Jira and Confluence.
+
+## Why Filament PM?
+
+**Filament PM** gives you full control over your team's work and knowledge - no per-user pricing, no vendor lock-in, no AI training on your private data.
+
+- 🏠 **Self-Hosted** - Your data, your infrastructure
+- 🔍 **AI-Powered Search** - Semantic search built-in (no expensive addons)
+- 🎨 **Custom Workflows** - Per-project status customization
+- 📊 **Kanban Boards** - Global and project-level views
+- 💰 **Zero Licensing Fees** - Open source, forever
 
 ## Features
 
@@ -24,6 +34,98 @@ A project management system built with Laravel 12, Filament 4, and AI-powered se
   - Powered by Filament Shield and Spatie Laravel Permission
   - Granular permissions for Projects, Tasks, Documents, and Comments
   - Three default roles: Product Manager, Developer, Viewer
+
+## Comparison with Jira & Confluence
+
+### Project & Task Management
+
+| Feature | Jira | Confluence | Filament PM | Notes |
+|---------|------|------------|-------------|-------|
+| **Projects** | ✅ Full project management | ❌ N/A | ✅ Projects with owner, members, roles | Filament PM: Role-based members (Product Manager, Developer, Viewer) |
+| **Tasks** | ✅ With subtasks, epic linking | 🔶 Task macros only | ✅ Tasks with title, description, status | Jira: More hierarchy (Epic → Task → Subtask) |
+| **Status Workflow** | 🔶 Custom workflows (Enterprise+ only) | ❌ N/A | ✅ Per-project custom status arrays | **Filament PM advantage**: Each project can define its own workflow |
+| **Task Statuses** | ✅ Fully customizable | ❌ N/A | ✅ 5 default statuses (Backlog → Done) | Filament PM: Can be overridden per project |
+| **Assignees** | ✅ Multiple assignees | ❌ N/A | ✅ Single assignee | Planned: Multiple assignees per task |
+| **Sprints** | ✅ Full Scrum support | ❌ N/A | ❌ Not implemented | Roadmap: Sprint planning |
+| **Epics** | ✅ Epic grouping | ❌ N/A | ❌ Not implemented | Roadmap: Task grouping/tags |
+| **Time Tracking** | ✅ Native time tracking | ❌ N/A | ❌ Not implemented | Roadmap: Basic time logging |
+| **Task Dependencies** | ✅ Blocking/linked issues | ❌ N/A | ❌ Not implemented | Roadmap: Task dependencies |
+| **Kanban Board** | ✅ Per-project Kanban | ❌ N/A | ✅ Per-project + Global Kanban | **Filament PM advantage**: Global view across all projects |
+| **Task Search** | ✅ Advanced JQL | ✅ Basic search | ✅ Database query | Roadmap: Enhanced search with filters |
+| **Task Priorities** | ✅ Customizable priorities | ❌ N/A | ❌ Not implemented | Roadmap: Priority field |
+| **Labels/Tags** | ✅ Full label system | ✅ Labels | ❌ Not implemented | Roadmap: Tag system |
+| **Task Comments** | ✅ Comments + mentions | ✅ Comments | ✅ Comments via RelationManager | Planned: Direct comments on task view |
+| **Attachments** | ✅ File attachments | ✅ Attachments | 🔶 Via documents | Can link documents to tasks |
+| **Bulk Operations** | ✅ Bulk edit/move | ✅ Bulk operations | ❌ Not implemented | Roadmap: Bulk actions |
+| **Task History** | ✅ Full audit trail | ✅ Page history | 🔶 Laravel timestamps | Planned: Detailed activity log |
+
+### Collaboration & Documentation
+
+| Feature | Jira | Confluence | Filament PM | Notes |
+|---------|------|------------|-------------|-------|
+| **Documents/Wiki** | 🔶 Basic wiki | ✅ Full documentation | ✅ Documents with content | Confluence: Page hierarchy; Filament PM: Flat with linking |
+| **Rich Text Editor** | ✅ Advanced | ✅ Advanced | ✅ Filament forms (markdown planned) | Roadmap: Rich text with markdown support |
+| **AI Semantic Search** | ❌ Requires expensive addon | ❌ Requires addon | ✅ **Built-in with embeddings** | **Filament PM unique advantage**: Vector similarity search |
+| **Document Versioning** | ✅ Page versions | ✅ Full history | 🔶 Basic timestamps | Planned: Full version history |
+| **Real-time Collaboration** | ✅ Concurrent editing | ✅ Real-time | ❌ Not implemented | Roadmap: Live collaboration |
+| **Document Templates** | ✅ Blueprints | ✅ Templates | ❌ Not implemented | Roadmap: Document templates |
+| **Code Blocks** | ✅ Syntax highlighting | ✅ Code blocks | ❌ Not implemented | Planned: Markdown code blocks |
+| **File Attachments** | ✅ Direct uploads | ✅ Attachments | 🔶 Via document linking | Planned: Direct file uploads |
+| **Page Hierarchy** | ❌ N/A | ✅ Nested pages | ❌ Flat structure | Architectural decision: Use linking vs hierarchy |
+| **Export (PDF/MD)** | ✅ Multiple formats | ✅ Multiple formats | ❌ Not implemented | Roadmap: Export functionality |
+| **Inline Comments** | ✅ Comment on text | ✅ Inline comments | ❌ Not implemented | Roadmap: Annotation system |
+| **Table of Contents** | ✅ Auto-generated | ✅ Auto TOC | ❌ Not implemented | Planned: Document structure parsing |
+
+### Security, Permissions & Access
+
+| Feature | Jira | Confluence | Filament PM | Notes |
+|---------|------|------------|-------------|-------|
+| **User Roles & Permissions** | ✅ Granular permissions | ✅ Space permissions | ✅ Role-based (Filament Shield) | Filament PM: Product Manager, Developer, Viewer |
+| **Project-Level Access** | ✅ Project permissions | ✅ Space restrictions | ✅ Project membership | Filament PM: Member-based access control |
+| **Granular Permissions** | ✅ Per-issue security | ✅ Page restrictions | ✅ Policies per resource | Filament PM: Policy-based authorization |
+| **Two-Factor Authentication** | ✅ 2FA available | ✅ 2FA available | ✅ Via Fortify/Spark | Requires configuration |
+| **SSO/SAML Integration** | ✅ Enterprise tier | ✅ Enterprise tier | 🔶 Requires setup | Roadmap: Native SSO integration |
+| **Audit Logs** | ✅ Full audit logs | ✅ Activity logs | 🔶 Basic timestamps | Planned: Detailed audit trail |
+| **Self-Hosted Security** | ✅ Data Center (expensive) | ✅ Data Center (expensive) | ✅ Full control | **Filament PM advantage**: You control security |
+| **Data Export** | ✅ Full export | ✅ Full export | ✅ Database access | Filament PM: Direct database access |
+| **Backup & Restore** | ✅ Cloud-managed | ✅ Cloud-managed | ✅ Your responsibility | Filament PM: Standard Laravel backups |
+
+### Extensibility, Integration & Operations
+
+| Feature | Jira | Confluence | Filament PM | Notes |
+|---------|------|------------|-------------|-------|
+| **API Availability** | ✅ REST, GraphQL | ✅ REST, GraphQL | ✅ Laravel API routes | Filament PM: Build your own API |
+| **Webhooks** | ✅ Extensive webhooks | ✅ Webhooks | 🔶 Via Laravel events | Planned: Native webhook system |
+| **Third-Party Integrations** | ✅ Huge marketplace | ✅ Huge marketplace | 🔶 Community-built | Filament PM: Build your own integrations |
+| **Custom Fields** | ✅ Full custom fields | ✅ Custom properties | 🔶 Via migrations | Filament PM: Database-level customization |
+| **Automation** | ✅ Automation rules | ✅ Automation | 🔶 Via Laravel jobs | Filament PM: Code-based automation |
+| **Plugins/Marketplace** | ✅ Thousands of apps | ✅ Thousands of apps | ❌ No marketplace | **Trade-off**: Unlimited customization vs pre-built apps |
+| **Theming & Branding** | 🔶 Limited | 🔶 Limited | ✅ Full Filament theming | **Filament PM advantage**: Complete UI control |
+| **Email Notifications** | ✅ Advanced notifications | ✅ Notifications | ✅ Laravel notifications | Filament PM: Standard Laravel mail |
+| **Database Requirements** | ✅ Managed (cloud) | ✅ Managed (cloud) | ✅ SQLite/MySQL/Postgres | **Filament PM advantage**: Choice of database |
+| **Hosting Flexibility** | 🔶 Cloud or expensive DC | 🔶 Cloud or expensive DC | ✅ Any PHP host | **Filament PM advantage**: Run anywhere |
+| **Maintenance Overhead** | ❌ Atlassian-managed | ❌ Atlassian-managed | ✅ Your control | **Trade-off**: Control vs convenience |
+| **Update Process** | ✅ Automatic (cloud) | ✅ Automatic (cloud) | ✅ `composer update` | Filament PM: You control when to update |
+| **Community & Support** | ✅ Official support paid | ✅ Official support paid | 🔶 Community only | Filament PM: Self-hosted = self-supported |
+| **Cost Structure** | ❌ Per-user licensing | ❌ Per-user licensing | ✅ FREE | **Filament PM advantage**: Zero licensing fees |
+
+### Pros & Cons Summary
+
+#### Filament PM - Freedom & Ownership
+
+| Perspective | Pros | Cons |
+|-------------|------|------|
+| **UX** | • Clean, focused interface - no bloat<br>• Customizable status workflows<br>• Built-in Kanban (global + per-project)<br>• Modern Filament UI with dark mode | • No native mobile app yet<br>• Fewer pre-built views (Timeline/Gantt planned)<br>• Non-technical users may prefer Atlassian's familiarity |
+| **Technical** | • **Full data ownership** - self-hosted, no AI training on your data<br>• **AI-powered semantic search** built-in (Confluence doesn't have this)<br>• **Extend freely** - modify core, add features, no app marketplace limitations<br>• Laravel/PHP stack - easy to hire developers | • Requires in-house DevOps or hosting knowledge<br>• Community-driven support (no paid support tier)<br>• You control updates, security patches |
+| **Cost** | • **Zero licensing fees** - ever<br>• **No per-user pricing** - scale without penalty<br>• **No vendor lock-in** - your data, your code<br>• Hosting costs scale with your usage, not seats | • Requires development resources for custom needs<br>• No SLA guarantee (you control your uptime)<br>• Hidden "cost" is time invested in setup |
+
+#### Atlassian (Jira + Confluence)
+
+| Perspective | Pros | Cons |
+|-------------|------|------|
+| **UX** | • Polished, familiar interface<br>• Native mobile apps<br>• Extensive keyboard shortcuts | • Overwhelming for simple use cases<br>• Performance degrades with large data<br>• Inconsistent UX between Jira/Confluence |
+| **Technical** | • Enterprise features (SSO, audit logs)<br>• Large plugin marketplace<br>• Cloud with 99.9% SLA | • **No native AI semantic search**<br>• **Limited customization** without expensive apps<br>• **Data used for AI training** (unless paid tier)<br>• Plugin conflicts are common |
+| **Cost** | • No maintenance (cloud)<br>• Predictable pricing | • **Expensive per-user licensing**<br>• **Vendor lock-in** - difficult migration<br>• **Extra costs for essential features** (advanced search, more storage)<br>• Pricing increases over time |
 
 ## Tech Stack
 
