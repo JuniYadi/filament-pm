@@ -75,10 +75,13 @@ class User extends Authenticatable
      */
     public function allProjects()
     {
-        $ownedIds = $this->ownedProjects()->pluck('id');
-        $memberIds = $this->projects()->pluck('id');
-
-        return Project::whereIn('id', $ownedIds->merge($memberIds)->unique());
+        // Use a subquery approach to avoid ambiguous column names
+        return Project::where(function ($query) {
+            $query->where('owner_id', $this->id)
+                ->orWhereHas('members', function ($q) {
+                    $q->where('users.id', $this->id);
+                });
+        });
     }
 
     /**
