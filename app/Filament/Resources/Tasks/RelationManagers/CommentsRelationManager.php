@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Tasks\RelationManagers;
 
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -16,10 +16,10 @@ class CommentsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'content';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 \Filament\Forms\Components\Textarea::make('content')
                     ->required()
                     ->rows(3)

@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -15,10 +15,10 @@ class MembersRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 \Filament\Forms\Components\Select::make('role')
                     ->options([
                         'Product Manager' => 'Product Manager',

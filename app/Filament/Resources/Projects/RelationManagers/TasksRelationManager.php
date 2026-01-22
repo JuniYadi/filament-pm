@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Projects\RelationManagers;
 
 use App\Models\User;
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -17,10 +17,10 @@ class TasksRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 \Filament\Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
