@@ -1,6 +1,4 @@
-@vite(['resources/css/kanban.css'])
-<div x-data="kanbanBoard({{ json_encode($statuses) }}, @entangle('columns'))"
-     class="kanban-board">
+<div x-data="{ statuses: {{ json_encode($statuses) }}, columns: @entangle('columns') }" class="kanban-board">
     <div class="flex gap-4 overflow-x-auto pb-4">
         @foreach($statuses as $status)
             <div class="kanban-column min-w-[300px] w-80 flex-shrink-0 bg-gray-50 dark:bg-gray-800 rounded-lg p-4"
@@ -43,19 +41,3 @@
         @endforeach
     </div>
 </div>
-
-@push('scripts')
-<script>
-    function kanbanBoard(statuses, columns) {
-        return {
-            statuses: statuses,
-            columns: columns,
-
-            initBoard() {
-                // Initialize drag and drop if needed
-                // Filament's wire:sortable handles most of this
-            }
-        }
-    }
-</script>
-@endpush
