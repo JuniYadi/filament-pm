@@ -2,6 +2,10 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use Filament\Actions\AttachAction;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
@@ -56,12 +60,12 @@ class MembersRelationManager extends RelationManager
                 //
             ])
             ->recordActions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
-                Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make()
+                CreateAction::make(),
+                AttachAction::make()
                     ->recordSelectOptionsQuery(fn ($query) => $query->whereNotIn('id', $this->ownerRecord->members->pluck('id'))),
             ]);
     }
