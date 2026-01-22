@@ -7,6 +7,6 @@
             View and manage tasks across all projects.
         </p>
 
-        {{ \App\Filament\Widgets\KanbanWidget::make() }}
+        @livewire(\App\Filament\Widgets\KanbanWidget::class)
     </div>
 </x-filament-panels::page>
