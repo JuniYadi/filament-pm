@@ -47,82 +47,23 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
-# Run migrations
-php artisan migrate
+# Run migrations and seed (includes default roles + admin user)
+php artisan migrate --seed
+
+# Build frontend assets
+npm run build
 ```
 
-### 2. Create First Admin User
+### 2. Admin User Credentials
 
-You need to create your first user and assign them the Product Manager role to access the admin panel.
+After running `php artisan migrate --seed`, a default admin user is created:
 
-**Option A: Using Tinker (Recommended)**
+- **Email**: `admin@filament-pm.test`
+- **Password**: `password`
 
-```bash
-php artisan tinker
+**Important**: Change the password after first login!
 
-# Run these commands in tinker:
-$user = \App\Models\User::create([
-    'name' => 'Admin User',
-    'email' => 'admin@example.com',
-    'password' => bcrypt('your-password')
-]);
-
-# Assign Product Manager role
-$user->assignRole('Product Manager');
-
-exit
-```
-
-**Option B: Using a Custom Command**
-
-Create a seeder for quick setup:
-
-```bash
-# Create a seeder
-php artisan make:seeder AdminUserSeeder
-```
-
-Edit `database/seeders/AdminUserSeeder.php`:
-
-```php
-<?php
-
-namespace Database\Seeders;
-
-use App\Models\User;
-use Illuminate\Database\Seeder;
-
-class AdminUserSeeder extends Seeder
-{
-    public function run(): void
-    {
-        $user = User::updateOrCreate(
-            ['email' => 'admin@example.com'],
-            [
-                'name' => 'Admin User',
-                'password' => bcrypt('admin123'),
-            ]
-        );
-
-        $user->assignRole('Product Manager');
-    }
-}
-```
-
-Then run:
-
-```bash
-php artisan db:seed --class=AdminUserSeeder
-```
-
-### 3. Seed Default Roles
-
-```bash
-# Seed the three default roles (Product Manager, Developer, Viewer)
-php artisan db:seed --class=RoleSeeder
-```
-
-### 4. Configure OpenAI (Optional)
+### 3. Configure OpenAI (Optional)
 
 For AI-powered semantic document search, add your OpenAI API key to `.env`:
 
@@ -130,13 +71,7 @@ For AI-powered semantic document search, add your OpenAI API key to `.env`:
 OPENAI_API_KEY=your_actual_api_key_here
 ```
 
-### 5. Build Frontend Assets
-
-```bash
-npm run build
-```
-
-### 6. Start Development Server
+### 4. Start Development Server
 
 ```bash
 # Start all services (server, queue, logs, vite)
@@ -149,12 +84,25 @@ php artisan pail
 npm run dev
 ```
 
-### 7. Access the Application
+### 5. Access the Application
 
-1. **Admin Panel**: `http://localhost:8000/admin`
-2. **Login** with the credentials you created:
-   - Email: `admin@example.com` (or what you set)
-   - Password: `your-password`
+- **Admin Panel**: `http://localhost:8000/admin`
+- Login with the admin credentials above
+
+### Creating Additional Admin Users
+
+To create more admin users via tinker:
+
+```bash
+php artisan tinker
+
+$user = \App\Models\User::create([
+    'name' => 'Another Admin',
+    'email' => 'another@example.com',
+    'password' => bcrypt('secure-password')
+]);
+$user->assignRole('Product Manager');
+```
 
 ## Initial Setup Checklist
 
