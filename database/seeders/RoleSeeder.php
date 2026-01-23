@@ -12,10 +12,10 @@ class RoleSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create roles
-        $productManager = Role::create(['name' => 'Product Manager']);
-        $developer = Role::create(['name' => 'Developer']);
-        $viewer = Role::create(['name' => 'Viewer']);
+        // Create application roles (super_admin is created by ShieldSeeder)
+        Role::firstOrCreate(['name' => 'Product Manager']);
+        Role::firstOrCreate(['name' => 'Developer']);
+        Role::firstOrCreate(['name' => 'Viewer']);
 
         // Product Manager gets all permissions (will be granted via Shield UI)
         // Developer and Viewer will have specific permissions assigned via UI
