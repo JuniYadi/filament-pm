@@ -17,7 +17,8 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'Admin User',
                 'password' => bcrypt('password'),
+                'email_verified_at' => now(),
             ]
-        )->assignRole('Product Manager');
+        )->assignRole('super_admin', 'Product Manager');
     }
 }
