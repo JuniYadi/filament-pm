@@ -34,15 +34,12 @@ if [ -z "$DB_CONNECTION" ] || [ "$DB_CONNECTION" = "sqlite" ]; then
 
     echo "🔧 Using SQLite: database/database.sqlite"
 
-    # Check if database is empty (no migrations table)
-    TABLE_COUNT=$(php artisan db:table --connection=sqlite 2>/dev/null || echo "0")
-
-    # Run migrations if database is empty
-    if [ "$TABLE_COUNT" = "0" ]; then
+    # Check if migrations table exists using sqlite3 command
+    if sqlite3 /var/www/html/database/database.sqlite "SELECT name FROM sqlite_master WHERE type='table' AND name='migrations';" 2>/dev/null | grep -q migrations; then
+        echo "✅ Database already migrated, skipping..."
+    else
         echo "🚀 Running database migrations..."
         php artisan migrate --force
-    else
-        echo "✅ Database already migrated, skipping..."
     fi
 else
     echo "ℹ️  DB_CONNECTION is set to '$DB_CONNECTION' - skipping auto-migration"
