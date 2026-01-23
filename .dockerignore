@@ -1,0 +1,61 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+LICENSE
+docs/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Dependencies (installed during build)
+vendor/
+node_modules/
+package-lock.json
+composer.lock
+
+# Local environment
+.env
+.env.backup
+.env.local
+.env.*.local
+
+# Testing
+tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Build artifacts
+npm-debug.log
+yarn-error.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+
+# Misc
+.editorconfig
+ Gemfile
+Gemfile.lock
+opencode.json
+boost.json
+.mcp.json
+
+# Database (will be created in container)
+database/database.sqlite
+database/*.sqlite
