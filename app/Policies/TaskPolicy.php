@@ -1,49 +1,69 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Task;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class TaskPolicy
 {
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Task');
     }
 
-    public function view(User $user, Task $task): bool
+    public function view(AuthUser $authUser, Task $task): bool
     {
-        return $user->hasRole('Product Manager')
-            || $task->project->members->contains($user->id)
-            || $task->assigned_to === $user->id;
+        return $authUser->can('View:Task');
     }
 
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->hasRole(['Product Manager', 'Developer']);
+        return $authUser->can('Create:Task');
     }
 
-    public function update(User $user, Task $task): bool
+    public function update(AuthUser $authUser, Task $task): bool
     {
-        return $user->hasRole('Product Manager')
-            || $task->project->owner_id === $user->id
-            || $task->assigned_to === $user->id;
+        return $authUser->can('Update:Task');
     }
 
-    public function delete(User $user, Task $task): bool
+    public function delete(AuthUser $authUser, Task $task): bool
     {
-        return $user->hasRole('Product Manager')
-            || $task->project->owner_id === $user->id;
+        return $authUser->can('Delete:Task');
     }
 
-    public function restore(User $user, Task $task): bool
+    public function restore(AuthUser $authUser, Task $task): bool
     {
-        return $user->hasRole('Product Manager');
+        return $authUser->can('Restore:Task');
     }
 
-    public function forceDelete(User $user, Task $task): bool
+    public function forceDelete(AuthUser $authUser, Task $task): bool
     {
-        return $user->hasRole('Product Manager');
+        return $authUser->can('ForceDelete:Task');
+    }
+
+    public function forceDeleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ForceDeleteAny:Task');
+    }
+
+    public function restoreAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('RestoreAny:Task');
+    }
+
+    public function replicate(AuthUser $authUser, Task $task): bool
+    {
+        return $authUser->can('Replicate:Task');
+    }
+
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('Reorder:Task');
     }
 }
