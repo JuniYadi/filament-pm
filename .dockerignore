@@ -19,7 +19,7 @@ docs/
 vendor/
 node_modules/
 package-lock.json
-composer.lock
+# Note: composer.lock is needed for reproducible builds in Docker
 
 # Local environment
 .env
