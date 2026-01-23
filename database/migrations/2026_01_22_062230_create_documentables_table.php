@@ -14,7 +14,7 @@ return new class extends Migration
             $table->morphs('documentable'); // entity_type, entity_id
             $table->timestamps();
 
-            $table->index(['document_id', 'documentable_type', 'documentable_id']);
+            $table->index(['document_id', 'documentable_type', 'documentable_id'], 'docables_doc_type_id_index');
         });
     }
 
