@@ -1,55 +1,69 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Document;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class DocumentPolicy
 {
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Document');
     }
 
-    public function view(User $user, Document $document): bool
+    public function view(AuthUser $authUser, Document $document): bool
     {
-        // Standalone docs (no project): only creator and PM can view
-        if (! $document->project_id) {
-            return $user->hasRole('Product Manager')
-                || $document->created_by === $user->id;
-        }
-
-        // Project docs: project members can view
-        return $user->hasRole('Product Manager')
-            || $document->project->members->contains($user->id)
-            || $document->created_by === $user->id;
+        return $authUser->can('View:Document');
     }
 
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->hasRole(['Product Manager', 'Developer']);
+        return $authUser->can('Create:Document');
     }
 
-    public function update(User $user, Document $document): bool
+    public function update(AuthUser $authUser, Document $document): bool
     {
-        return $user->hasRole('Product Manager')
-            || $document->created_by === $user->id;
+        return $authUser->can('Update:Document');
     }
 
-    public function delete(User $user, Document $document): bool
+    public function delete(AuthUser $authUser, Document $document): bool
     {
-        return $user->hasRole('Product Manager')
-            || $document->created_by === $user->id;
+        return $authUser->can('Delete:Document');
     }
 
-    public function restore(User $user, Document $document): bool
+    public function restore(AuthUser $authUser, Document $document): bool
     {
-        return $user->hasRole('Product Manager');
+        return $authUser->can('Restore:Document');
     }
 
-    public function forceDelete(User $user, Document $document): bool
+    public function forceDelete(AuthUser $authUser, Document $document): bool
     {
-        return $user->hasRole('Product Manager');
+        return $authUser->can('ForceDelete:Document');
+    }
+
+    public function forceDeleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ForceDeleteAny:Document');
+    }
+
+    public function restoreAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('RestoreAny:Document');
+    }
+
+    public function replicate(AuthUser $authUser, Document $document): bool
+    {
+        return $authUser->can('Replicate:Document');
+    }
+
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('Reorder:Document');
     }
 }

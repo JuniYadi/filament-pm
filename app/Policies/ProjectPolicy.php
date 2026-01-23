@@ -1,48 +1,69 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Project;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class ProjectPolicy
 {
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+
+    public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Project');
     }
 
-    public function view(User $user, Project $project): bool
+    public function view(AuthUser $authUser, Project $project): bool
     {
-        return $user->hasRole('Product Manager')
-            || $project->owner_id === $user->id
-            || $project->members->contains($user->id);
+        return $authUser->can('View:Project');
     }
 
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $user->hasRole(['Product Manager', 'Developer']);
+        return $authUser->can('Create:Project');
     }
 
-    public function update(User $user, Project $project): bool
+    public function update(AuthUser $authUser, Project $project): bool
     {
-        return $user->hasRole('Product Manager')
-            || $project->owner_id === $user->id;
+        return $authUser->can('Update:Project');
     }
 
-    public function delete(User $user, Project $project): bool
+    public function delete(AuthUser $authUser, Project $project): bool
     {
-        return $user->hasRole('Product Manager')
-            || $project->owner_id === $user->id;
+        return $authUser->can('Delete:Project');
     }
 
-    public function restore(User $user, Project $project): bool
+    public function restore(AuthUser $authUser, Project $project): bool
     {
-        return $user->hasRole('Product Manager');
+        return $authUser->can('Restore:Project');
     }
 
-    public function forceDelete(User $user, Project $project): bool
+    public function forceDelete(AuthUser $authUser, Project $project): bool
     {
-        return $user->hasRole('Product Manager');
+        return $authUser->can('ForceDelete:Project');
+    }
+
+    public function forceDeleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ForceDeleteAny:Project');
+    }
+
+    public function restoreAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('RestoreAny:Project');
+    }
+
+    public function replicate(AuthUser $authUser, Project $project): bool
+    {
+        return $authUser->can('Replicate:Project');
+    }
+
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('Reorder:Project');
     }
 }
