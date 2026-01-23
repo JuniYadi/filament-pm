@@ -1,0 +1,31 @@
+# ===============================================
+# Docker Compose for Filament PM
+# ===============================================
+# Use this for local development and testing
+# Run: docker-compose up -d
+
+services:
+  filament-pm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: filament-pm:latest
+    container_name: filament-pm-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_CONNECTION=sqlite
+    volumes:
+      # Persist SQLite database
+      - ./database:/var/www/html/database
+      # Optional: Mount local storage for development
+      - ./storage:/var/www/html/storage
+    networks:
+      - filament-network
+
+networks:
+  filament-network:
+    driver: bridge

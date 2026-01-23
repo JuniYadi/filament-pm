@@ -206,6 +206,92 @@ $user = \App\Models\User::create([
 $user->assignRole('Product Manager');
 ```
 
+## Docker Deployment
+
+Filament PM includes Docker support for easy containerized deployment.
+
+### Using Docker Compose (Recommended for Local Development)
+
+```bash
+# Build and start the container
+docker-compose up -d
+
+# Access the application
+open http://localhost:8080/admin
+```
+
+The container will:
+- Automatically run migrations for SQLite on first start
+- Persist the database in `./database/database.sqlite`
+- Serve the application on port 8080
+
+### Using Pre-built Images from GitHub Container Registry
+
+```bash
+# Pull the latest image
+docker pull ghcr.io/YOUR_USERNAME/filament-pm:latest
+
+# Run the container
+docker run -d \
+  --name filament-pm \
+  -p 8080:80 \
+  -v $(pwd)/database:/var/www/html/database \
+  ghcr.io/YOUR_USERNAME/filament-pm:latest
+```
+
+### Building Your Own Image
+
+```bash
+# Build the image
+docker build -t filament-pm:latest .
+
+# Run the container
+docker run -d \
+  --name filament-pm \
+  -p 8080:80 \
+  -v $(pwd)/database:/var/www/html/database \
+  filament-pm:latest
+```
+
+### Environment Variables
+
+You can override environment variables at runtime:
+
+```bash
+docker run -d \
+  --name filament-pm \
+  -p 8080:80 \
+  -e DB_CONNECTION=mysql \
+  -e DB_HOST=your-db-host \
+  -e DB_DATABASE=filament_pm \
+  -e DB_USERNAME=your-user \
+  -e DB_PASSWORD=your-password \
+  ghcr.io/YOUR_USERNAME/filament-pm:latest
+```
+
+**Note:** When `DB_CONNECTION` is set to anything other than `sqlite`, migrations will NOT run automatically. You'll need to run them manually:
+
+```bash
+docker exec filament-pm php artisan migrate --force
+```
+
+### Automated Docker Builds
+
+When you push a git tag matching `v*.*.*` (e.g., `v1.0.0`), GitHub Actions will automatically:
+
+1. Build a Docker image
+2. Push it to GitHub Container Registry (GHCR)
+3. Tag it with the version number and `latest`
+
+Example:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+The image will be available at: `ghcr.io/YOUR_USERNAME/filament-pm:v1.0.0`
+
 ## Initial Setup Checklist
 
 After installation, complete these steps:
