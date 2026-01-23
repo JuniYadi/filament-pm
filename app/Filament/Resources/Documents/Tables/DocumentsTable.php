@@ -7,6 +7,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Mansoor\FilamentVersionable\Table\RevisionsAction;
 
 class DocumentsTable
 {
@@ -43,6 +44,7 @@ class DocumentsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                RevisionsAction::make(),
                 DeleteAction::make(),
             ]);
     }

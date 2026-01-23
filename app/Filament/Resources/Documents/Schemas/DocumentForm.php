@@ -1,11 +1,13 @@
 <?php
-
 namespace App\Filament\Resources\Documents\Schemas;
 
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -15,34 +17,41 @@ class DocumentForm
     {
         return $schema
             ->components([
-                Section::make()
-                    ->schema([
-                        TextInput::make('title')
-                            ->required()
-                            ->maxLength(255)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state))),
-
-                        TextInput::make('slug')
-                            ->required()
-                            ->maxLength(255)
-                            ->unique(ignoreRecord: true),
-
-                        Select::make('project_id')
-                            ->relationship('project', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->nullable(),
+                Grid::make()
+                    ->columns([
+                        'sm' => 1,
+                        'lg' => 4,
                     ])
-                    ->columns(2),
-
-                Section::make('Content')
                     ->schema([
-                        MarkdownEditor::make('content')
-                            ->required()
-                            ->columnSpanFull(),
-                    ])
-                    ->columns(1),
+
+                        Section::make()
+                            ->schema([
+                                TextInput::make('title')
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(onBlur: true)
+                                    ->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+
+                                Hidden::make('slug'),
+
+                                Select::make('project_id')
+                                    ->relationship('project', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->nullable(),
+
+                                RichEditor::make('content')
+                                    ->required()
+                                    ->columnSpanFull(),
+                            ])->columnSpan(['lg' => 3]),
+
+                        Section::make([
+                            Toggle::make('is_published'),
+                            Toggle::make('is_featured'),
+                        ])->columnSpan(['lg' => 1]),
+
+                    ]),
+
             ]);
     }
 }
