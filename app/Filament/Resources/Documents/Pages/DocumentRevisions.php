@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Filament\Resources\Documents\Pages;
 
 use App\Filament\Resources\Documents\DocumentResource;
@@ -22,6 +21,6 @@ class DocumentRevisions extends RevisionsPage
      */
     public function shouldStripTags(): bool
     {
-        return true;
+        return false;
     }
 }
