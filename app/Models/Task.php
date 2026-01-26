@@ -44,6 +44,11 @@ class Task extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class)->latest('created_at');
+    }
+
     public function documents(): MorphToMany
     {
         return $this->morphToMany(
