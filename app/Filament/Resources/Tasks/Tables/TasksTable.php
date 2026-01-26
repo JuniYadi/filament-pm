@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Tasks\Tables;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -36,6 +37,9 @@ class TasksTable
                         'info' => 'review',
                         'success' => 'done',
                     ]),
+
+                SpatieTagsColumn::make('tags')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('order')
                     ->sortable()

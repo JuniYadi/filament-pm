@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Documents\Tables;
 
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -29,6 +30,9 @@ class DocumentsTable
                     ->searchable()
                     ->sortable()
                     ->toggleable(),
+
+                SpatieTagsColumn::make('tags')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('created_at')
                     ->label('Created')
