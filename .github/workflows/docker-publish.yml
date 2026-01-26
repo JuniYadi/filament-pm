@@ -219,13 +219,11 @@ jobs:
               "${IMAGE_BASE}:${VERSION}-arm64"
           fi
 
-          # Create manifest for latest tag (only if on default branch)
-          if [ "${{ github.ref }}" == "$(git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's@refs/remotes/origin/@@')" ]; then
-            docker buildx imagetools create \
-              --tag "${IMAGE_BASE}:latest" \
-              "${IMAGE_BASE}:${VERSION}-amd64" \
-              "${IMAGE_BASE}:${VERSION}-arm64"
-          fi
+          # Create manifest for latest tag (always created on version tags)
+          docker buildx imagetools create \
+            --tag "${IMAGE_BASE}:latest" \
+            "${IMAGE_BASE}:${VERSION}-amd64" \
+            "${IMAGE_BASE}:${VERSION}-arm64"
 
           echo "Multi-arch manifest created successfully!"
 
