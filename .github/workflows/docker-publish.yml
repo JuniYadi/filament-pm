@@ -124,7 +124,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Image digest
-        run: echo "${{ matrix.name }} image digest: ${{ steps.build.outputs.digest }}"
+        run: echo '${{ matrix.name }} image digest: ${{ steps.build.outputs.digest }}'
 
   # -----------------------------------------------
   # Job 3: Merge Manifests
