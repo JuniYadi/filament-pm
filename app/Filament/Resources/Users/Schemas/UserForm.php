@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Spatie\Permission\Models\Role;
@@ -15,6 +15,10 @@ class UserForm
         return $schema
             ->components([
                 Section::make()
+                    ->columns([
+                        'sm' => 1,
+                        'lg' => 2,
+                    ])
                     ->schema([
                         TextInput::make('name')
                             ->required()
@@ -42,8 +46,7 @@ class UserForm
                             ->searchable()
                             ->options(Role::query()->pluck('name', 'id'))
                             ->required(),
-                    ])
-                    ->columns(2),
+                    ]),
             ]);
     }
 }

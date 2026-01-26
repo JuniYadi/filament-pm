@@ -18,6 +18,10 @@ class TaskForm
         return $schema
             ->components([
                 Section::make()
+                    ->columns([
+                        'sm' => 1,
+                        'lg' => 2,
+                    ])
                     ->schema([
                         Select::make('project_id')
                             ->relationship('project', 'name')
@@ -85,7 +89,6 @@ class TaskForm
                             ->label('Due Date')
                             ->nullable(),
                     ])
-                    ->columns(2)
                     ->columnSpanFull(),
             ]);
     }
