@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
+use DutchCodingCompany\FilamentSocialite\Provider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -20,6 +22,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Laravel\Socialite\Contracts\User as SocialiteUserContract;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -58,6 +61,30 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),
+                FilamentSocialitePlugin::make()
+                    ->providers([
+                        Provider::make('google')
+                            ->label('Google')
+                            ->icon('fab-google')
+                            ->color(Color::hex('#4285F4'))
+                            ->scopes([
+                                'email',
+                                'profile',
+                            ]),
+                    ])
+                    ->registration(true)
+                    ->rememberLogin(true)
+                    ->showDivider(true)
+                    ->userModelClass(\App\Models\User::class)
+                    ->socialiteUserModelClass(\App\Models\SocialiteUser::class)
+                    ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
+                        return \App\Models\User::create([
+                            'name' => $oauthUser->getName() ?? $oauthUser->getNickname(),
+                            'email' => $oauthUser->getEmail(),
+                            'email_verified_at' => now(),
+                            'password' => null,
+                        ]);
+                    }),
             ])
             ->authMiddleware([
                 Authenticate::class,
