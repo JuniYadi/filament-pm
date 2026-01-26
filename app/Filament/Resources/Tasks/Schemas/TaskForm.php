@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Filament\Resources\Tasks\Schemas;
 
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\MentionProvider;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -42,7 +44,7 @@ class TaskForm
                                     ]),
                                 MentionProvider::make('#')
                                     ->items([
-                                        'bug'     => 'Bug',
+                                        'bug' => 'Bug',
                                         'feature' => 'Feature',
                                     ]),
 
@@ -52,13 +54,16 @@ class TaskForm
 
                         Select::make('status')
                             ->options([
-                                'todo'        => 'Todo',
+                                'todo' => 'Todo',
                                 'in_progress' => 'In Progress',
-                                'review'      => 'Review',
-                                'done'        => 'Done',
+                                'review' => 'Review',
+                                'done' => 'Done',
                             ])
                             ->default('todo')
                             ->required(),
+
+                        SpatieTagsInput::make('tags')
+                            ->columnSpanFull(),
 
                         TextInput::make('order')
                             ->numeric()

@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Filament\Resources\Documents\Schemas;
 
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
@@ -30,7 +32,7 @@ class DocumentForm
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn($state, $set) => $set('slug', Str::slug($state))),
+                                    ->afterStateUpdated(fn ($state, $set) => $set('slug', Str::slug($state))),
 
                                 Hidden::make('slug'),
 
@@ -42,6 +44,9 @@ class DocumentForm
 
                                 RichEditor::make('content')
                                     ->required()
+                                    ->columnSpanFull(),
+
+                                SpatieTagsInput::make('tags')
                                     ->columnSpanFull(),
                             ])->columnSpan(['lg' => 3]),
 
