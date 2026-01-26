@@ -2,8 +2,13 @@
 
 namespace App\Filament\Resources\Tasks\Tables;
 
+use App\Enums\TaskStatus;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -89,6 +94,51 @@ class TasksTable
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
+            ])
+            ->headerActions([
+                BulkActionGroup::make([
+                    BulkAction::make('changeStatus')
+                        ->label('Change Status')
+                        ->icon('heroicon-o-arrow-path')
+                        ->requiresConfirmation()
+                        ->form([
+                            Select::make('status')
+                                ->label('New Status')
+                                ->options(collect(TaskStatus::cases())->pluck('value', 'value'))
+                                ->required()
+                                ->default('todo'),
+                        ])
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data) {
+                            $records->each(function (\App\Models\Task $task) use ($data) {
+                                $task->update(['status' => $data['status']]);
+                            });
+                        })
+                        ->successNotificationTitle('Status updated successfully')
+                        ->deselectRecordsAfterCompletion(),
+
+                    BulkAction::make('reassignTasks')
+                        ->label('Reassign Tasks')
+                        ->icon('heroicon-o-user-plus')
+                        ->requiresConfirmation()
+                        ->form([
+                            Select::make('assigned_to')
+                                ->label('Assign To')
+                                ->relationship(name: 'assignedTo', titleAttribute: 'name')
+                                ->searchable()
+                                ->preload()
+                                ->required(),
+                        ])
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data) {
+                            $records->each(function (\App\Models\Task $task) use ($data) {
+                                $task->update(['assigned_to' => $data['assigned_to']]);
+                            });
+                        })
+                        ->successNotificationTitle('Tasks reassigned successfully')
+                        ->deselectRecordsAfterCompletion(),
+
+                    DeleteBulkAction::make()
+                        ->successNotificationTitle('Tasks deleted successfully'),
+                ]),
             ]);
     }
 }
