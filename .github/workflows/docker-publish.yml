@@ -109,6 +109,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push ${{ matrix.name }} image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
