@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Projects\Tables;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -27,6 +28,9 @@ class ProjectsTable
                     ->label('Tasks')
                     ->counts('tasks')
                     ->sortable(),
+
+                SpatieTagsColumn::make('tags')
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('created_at')
                     ->dateTime()

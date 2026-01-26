@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\Schemas;
 
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -29,6 +30,9 @@ class ProjectForm
 
                         Textarea::make('description')
                             ->rows(3)
+                            ->columnSpanFull(),
+
+                        SpatieTagsInput::make('tags')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
