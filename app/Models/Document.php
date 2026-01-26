@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Facades\App;
 use Overtrue\LaravelVersionable\Versionable;
 use Overtrue\LaravelVersionable\VersionStrategy;
+use Spatie\Tags\HasTags;
 
 class Document extends Model
 {
-    use HasFactory, Versionable;
+    use HasFactory, HasTags, Versionable;
 
     protected $fillable = [
         'created_by',
