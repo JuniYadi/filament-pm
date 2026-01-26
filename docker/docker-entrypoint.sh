@@ -23,8 +23,11 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
 # 2. Database file doesn't exist yet
 # ===============================================
 
-# Get DB_CONNECTION from .env or use default
-DB_CONNECTION=$(grep -E "^DB_CONNECTION=" /var/www/html/.env 2>/dev/null | cut -d '=' -f2)
+# Get DB_CONNECTION with proper priority:
+# 1. System environment variable (Kubernetes ConfigMap/Secret, Docker -e flag)
+# 2. .env file (for local Docker compatibility)
+# 3. Empty (will default to 'sqlite' in logic below)
+DB_CONNECTION="${DB_CONNECTION:-$(grep -E '^DB_CONNECTION=' /var/www/html/.env 2>/dev/null | cut -d '=' -f2)}"
 
 if [ -z "$DB_CONNECTION" ] || [ "$DB_CONNECTION" = "sqlite" ]; then
     # Ensure database directory and file exist
