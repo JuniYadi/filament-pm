@@ -104,6 +104,8 @@ class KanbanWidgetTest extends TestCase
                     'title' => 'Test Task',
                     'description' => Task::first()->description,
                     'assigned_to' => $user->name,
+                    'due_date' => null,
+                    'is_overdue' => false,
                 ],
             ]);
     }

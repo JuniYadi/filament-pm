@@ -30,11 +30,21 @@
                                     {{ \Illuminate\Support\Str::limit($task['description'], 100) }}
                                 </p>
                             @endif
-                            @if($task['assigned_to'])
+                            @if($task['assigned_to'] || $task['due_date'])
                                 <div class="mt-2 flex items-center gap-2">
-                                    <span class="text-xs text-gray-500">
-                                        Assigned to: {{ $task['assigned_to'] }}
-                                    </span>
+                                    @if($task['assigned_to'])
+                                        <span class="text-xs text-gray-500">
+                                            Assigned to: {{ $task['assigned_to'] }}
+                                        </span>
+                                    @endif
+                                    @if($task['due_date'])
+                                        <span class="text-xs {{ $task['is_overdue'] ? 'text-danger-600 font-medium' : 'text-gray-500' }}">
+                                            Due: {{ \Carbon\Carbon::parse($task['due_date'])->format('M j') }}
+                                            @if($task['is_overdue'])
+                                                <span class="text-danger-600">!</span>
+                                            @endif
+                                        </span>
+                                    @endif
                                 </div>
                             @endif
                         </div>

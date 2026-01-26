@@ -54,6 +54,8 @@ class KanbanWidget extends Widget
                     'title' => $task->title,
                     'description' => $task->description,
                     'assigned_to' => $task->assignedTo?->name,
+                    'due_date' => $task->due_date ? ($task->due_date instanceof \Carbon\Carbon ? $task->due_date->toDateString() : $task->due_date) : null,
+                    'is_overdue' => $task->due_date && (($task->due_date instanceof \Carbon\Carbon ? $task->due_date : \Carbon\Carbon::parse($task->due_date))->isPast()) && $task->status !== 'done',
                 ])
                 ->values()
                 ->toArray();

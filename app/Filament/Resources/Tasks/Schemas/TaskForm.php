@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Tasks\Schemas;
 
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\RichEditor\MentionProvider;
 use Filament\Forms\Components\Select;
@@ -69,6 +70,10 @@ class TaskForm
                             ->numeric()
                             ->default(0)
                             ->minValue(0),
+
+                        DatePicker::make('due_date')
+                            ->label('Due Date')
+                            ->nullable(),
                     ])
                     ->columns(2)
                     ->columnSpanFull(),
