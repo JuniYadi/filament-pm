@@ -110,3 +110,6 @@ ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 # Start using startup script
 CMD ["/usr/local/bin/start.sh"]
+
+# OCI image description (can be overridden by build-time args)
+LABEL org.opencontainers.image.description="${DESCRIPTION:-Filament PM Application}"

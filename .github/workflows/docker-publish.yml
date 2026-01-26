@@ -53,7 +53,16 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # -----------------------------------------------
-      # Step 5: Extract metadata (tags, labels) from git
+      # Step 5: Extract tag annotation for description
+      # -----------------------------------------------
+      - name: Get tag description
+        id: tag-description
+        run: |
+          DESCRIPTION=$(git tag -l --format='%(contents:body)' "${{ github.ref_name }}" | head -c 500 | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | sed 's/"/\\"/g')
+          echo "description=${DESCRIPTION}" >> $GITHUB_OUTPUT
+
+      # -----------------------------------------------
+      # Step 6: Extract metadata (tags, labels) from git
       # -----------------------------------------------
       - name: Extract Docker metadata
         id: meta
@@ -65,9 +74,11 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.description=${{ steps.tag-description.outputs.description }}
 
       # -----------------------------------------------
-      # Step 6: Build and push Docker image
+      # Step 7: Build and push Docker image
       # -----------------------------------------------
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
@@ -78,10 +89,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
 
       # -----------------------------------------------
-      # Step 7: Image digest output
+      # Step 8: Image digest output
       # -----------------------------------------------
       - name: Image digest
         run: echo ${{ steps.build.outputs.digest }}
