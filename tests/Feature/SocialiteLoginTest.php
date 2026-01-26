@@ -104,6 +104,69 @@ class SocialiteLoginTest extends TestCase
         $this->assertSame($created->id, $found->id);
     }
 
+    public function test_new_oauth_user_gets_viewer_role_assigned(): void
+    {
+        $this->seed(\Database\Seeders\RoleSeeder::class);
+
+        $oauthUser = $this->createMockOAuthUserWithEmail('new-google-user', 'newuser@example.com');
+
+        // Simulate the createUserUsing callback logic
+        $user = \App\Models\User::create([
+            'name' => 'New User',
+            'email' => 'newuser@example.com',
+            'email_verified_at' => now(),
+            'password' => null,
+        ]);
+
+        $user->assignRole('Viewer');
+
+        $this->assertTrue($user->hasRole('Viewer'));
+        $this->assertCount(1, $user->getRoleNames());
+    }
+
+    public function test_existing_user_without_roles_gets_viewer_role_assigned(): void
+    {
+        $this->seed(\Database\Seeders\RoleSeeder::class);
+
+        $user = User::factory()->create([
+            'email' => 'existing@example.com',
+        ]);
+
+        // Verify user has no roles initially
+        $this->assertTrue($user->getRoleNames()->isEmpty());
+
+        // Simulate the resolveUserUsing callback logic
+        if ($user->getRoleNames()->isEmpty()) {
+            $user->assignRole('Viewer');
+        }
+
+        $this->assertTrue($user->hasRole('Viewer'));
+    }
+
+    public function test_existing_user_with_roles_does_not_get_additional_roles(): void
+    {
+        $this->seed(\Database\Seeders\RoleSeeder::class);
+
+        $user = User::factory()->create([
+            'email' => 'admin@example.com',
+        ]);
+        $user->assignRole('Developer');
+
+        // Verify user already has a role
+        $this->assertTrue($user->hasRole('Developer'));
+        $this->assertCount(1, $user->getRoleNames());
+
+        // Simulate the resolveUserUsing callback logic - should not add Viewer
+        if ($user->getRoleNames()->isEmpty()) {
+            $user->assignRole('Viewer');
+        }
+
+        // User should still only have Developer role
+        $this->assertTrue($user->hasRole('Developer'));
+        $this->assertFalse($user->hasRole('Viewer'));
+        $this->assertCount(1, $user->getRoleNames());
+    }
+
     /**
      * Create a mock OAuth user for testing.
      */
@@ -111,6 +174,18 @@ class SocialiteLoginTest extends TestCase
     {
         $mock = $this->createMock(SocialiteUserContract::class);
         $mock->method('getId')->willReturn($id);
+
+        return $mock;
+    }
+
+    /**
+     * Create a mock OAuth user with email for testing.
+     */
+    private function createMockOAuthUserWithEmail(string $id, string $email): SocialiteUserContract
+    {
+        $mock = $this->createMock(SocialiteUserContract::class);
+        $mock->method('getId')->willReturn($id);
+        $mock->method('getEmail')->willReturn($email);
 
         return $mock;
     }

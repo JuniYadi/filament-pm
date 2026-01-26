@@ -78,12 +78,27 @@ class AdminPanelProvider extends PanelProvider
                     ->userModelClass(\App\Models\User::class)
                     ->socialiteUserModelClass(\App\Models\SocialiteUser::class)
                     ->createUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
-                        return \App\Models\User::create([
+                        $user = \App\Models\User::create([
                             'name' => $oauthUser->getName() ?? $oauthUser->getNickname(),
                             'email' => $oauthUser->getEmail(),
                             'email_verified_at' => now(),
                             'password' => null,
                         ]);
+
+                        // Assign default Viewer role to new OAuth users so they can access the panel
+                        $user->assignRole('Viewer');
+
+                        return $user;
+                    })
+                    ->resolveUserUsing(function (string $provider, SocialiteUserContract $oauthUser, FilamentSocialitePlugin $plugin) {
+                        $user = \App\Models\User::where('email', $oauthUser->getEmail())->first();
+
+                        // Assign default Viewer role to existing users without roles
+                        if ($user && $user->getRoleNames()->isEmpty()) {
+                            $user->assignRole('Viewer');
+                        }
+
+                        return $user;
                     }),
             ])
             ->authMiddleware([
