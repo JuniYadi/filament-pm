@@ -38,7 +38,7 @@ jobs:
       version_tags: ${{ steps.meta.outputs.tags }}
       version_labels: ${{ steps.meta.outputs.labels }}
       tag_description: ${{ steps.tag-description.outputs.description }}
-      image_base: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      image_base: ${{ env.REGISTRY }}/${{ lowercase(env.IMAGE_NAME) }}
 
     steps:
       - name: Checkout repository
