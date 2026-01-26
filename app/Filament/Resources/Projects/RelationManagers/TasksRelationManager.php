@@ -9,7 +9,9 @@ use Filament\Actions\EditAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class TasksRelationManager extends RelationManager
@@ -118,7 +120,21 @@ class TasksRelationManager extends RelationManager
 
                 Tables\Filters\SelectFilter::make('assigned_to')
                     ->label('Assigned To')
-                    ->relationship('assignedTo', 'name'),
+                    ->relationship('assignedTo', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->placeholder('All Users'),
+
+                TernaryFilter::make('has_due_date')
+                    ->label('Has Due Date')
+                    ->placeholder('All Tasks')
+                    ->trueLabel('With Due Date')
+                    ->falseLabel('Without Due Date')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('due_date'),
+                        false: fn (Builder $query) => $query->whereNull('due_date'),
+                        blank: fn (Builder $query) => $query,
+                    ),
             ])
             ->recordActions([
                 EditAction::make(),
