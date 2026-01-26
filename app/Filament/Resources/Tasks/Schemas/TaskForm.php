@@ -63,6 +63,16 @@ class TaskForm
                             ->default('todo')
                             ->required(),
 
+                        Select::make('priority')
+                            ->options([
+                                'low' => 'Low',
+                                'medium' => 'Medium',
+                                'high' => 'High',
+                                'critical' => 'Critical',
+                            ])
+                            ->default('low')
+                            ->required(),
+
                         SpatieTagsInput::make('tags')
                             ->columnSpanFull(),
 

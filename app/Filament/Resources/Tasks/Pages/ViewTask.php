@@ -42,6 +42,16 @@ class ViewTask extends ViewRecord
                                 'done' => 'success',
                                 default => 'gray',
                             }),
+
+                        TextEntry::make('priority')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'low' => 'gray',
+                                'medium' => 'warning',
+                                'high' => 'orange',
+                                'critical' => 'danger',
+                                default => 'gray',
+                            }),
                         TextEntry::make('project.name'),
                         TextEntry::make('assignedTo.name')
                             ->label('Assigned To'),

@@ -21,9 +21,17 @@ class Task extends Model
         'title',
         'description',
         'status',
+        'priority',
         'order',
         'due_date',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'priority' => \App\Enums\TaskPriority::class,
+        ];
+    }
 
     public function project(): BelongsTo
     {
