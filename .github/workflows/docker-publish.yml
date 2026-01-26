@@ -2,7 +2,12 @@
 # GitHub Actions Workflow - Docker Image Build
 # ===============================================
 # Triggers on git tags matching v*.*.* (e.g., v1.0.0)
-# Builds and pushes Docker image to GitHub Container Registry
+# Builds and pushes Docker images to GitHub Container Registry
+#
+# Architecture: Parallel builds for AMD64 and ARM64
+# - AMD64 builds on ubuntu-latest (native x86_64)
+# - ARM64 builds on ubuntu-latest-arm64 (native ARM)
+# - No QEMU emulation needed - faster builds!
 
 name: Docker Image CI/CD
 
@@ -16,54 +21,35 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push:
+  # -----------------------------------------------
+  # Job 1: Prepare Metadata
+  # -----------------------------------------------
+  # Runs first on ubuntu-latest to extract metadata
+  # that will be shared across all build jobs
+  prepare:
+    name: Prepare Metadata
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
-      packages: write
+
+    outputs:
+      # Pass these outputs to dependent jobs
+      version_tags: ${{ steps.meta.outputs.tags }}
+      version_labels: ${{ steps.meta.outputs.labels }}
+      tag_description: ${{ steps.tag-description.outputs.description }}
+      image_base: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
     steps:
-      # -----------------------------------------------
-      # Step 1: Checkout repository code
-      # -----------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # -----------------------------------------------
-      # Step 2: Set up QEMU for multi-platform support
-      # -----------------------------------------------
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      # -----------------------------------------------
-      # Step 3: Set up Docker Buildx
-      # -----------------------------------------------
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # -----------------------------------------------
-      # Step 4: Log in to GitHub Container Registry
-      # -----------------------------------------------
-      - name: Log in to Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      # -----------------------------------------------
-      # Step 5: Extract tag annotation for description
-      # -----------------------------------------------
       - name: Get tag description
         id: tag-description
         run: |
           DESCRIPTION=$(git tag -l --format='%(contents:body)' "${{ github.ref_name }}" | head -c 500 | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | sed 's/"/\\"/g')
           echo "description=${DESCRIPTION}" >> $GITHUB_OUTPUT
 
-      # -----------------------------------------------
-      # Step 6: Extract metadata (tags, labels) from git
-      # -----------------------------------------------
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -77,22 +63,144 @@ jobs:
           labels: |
             org.opencontainers.image.description=${{ steps.tag-description.outputs.description }}
 
-      # -----------------------------------------------
-      # Step 7: Build and push Docker image
-      # -----------------------------------------------
-      - name: Build and push Docker image
+  # -----------------------------------------------
+  # Job 2: Build Platforms in Parallel
+  # -----------------------------------------------
+  # Builds AMD64 and ARM64 images simultaneously
+  # Each platform builds on its native hardware
+  build:
+    name: Build ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+
+    needs: prepare
+
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # AMD64 build on native x86_64 runner
+          - name: AMD64
+            os: ubuntu-latest
+            platform: linux/amd64
+            suffix: amd64
+
+          # ARM64 build on native ARM runner (no QEMU needed!)
+          - name: ARM64
+            os: ubuntu-latest-arm64
+            platform: linux/arm64
+            suffix: arm64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push ${{ matrix.name }} image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          platforms: ${{ matrix.platform }}
+          # Push platform-specific tag (e.g., ghcr.io/repo:1.0.0-amd64)
+          tags: |
+            ${{ needs.prepare.outputs.image_base }}:${{ github.ref_name }}-${{ matrix.suffix }}
+            ${{ needs.prepare.outputs.image_base }}:${{ matrix.suffix }}
+          labels: ${{ needs.prepare.outputs.version_labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
 
-      # -----------------------------------------------
-      # Step 8: Image digest output
-      # -----------------------------------------------
       - name: Image digest
-        run: echo ${{ steps.build.outputs.digest }}
+        run: echo "${{ matrix.name }} image digest: ${{ steps.build.outputs.digest }}"
+
+  # -----------------------------------------------
+  # Job 3: Merge Manifests
+  # -----------------------------------------------
+  # Creates multi-architecture manifest after all
+  # platform builds complete successfully
+  manifest:
+    name: Create Multi-Arch Manifest
+    runs-on: ubuntu-latest
+
+    needs: [prepare, build]
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push multi-arch manifest
+        run: |
+          # Get version tags from prepare job
+          VERSION_TAGS="${{ needs.prepare.outputs.version_tags }}"
+          IMAGE_BASE="${{ needs.prepare.outputs.image_base }}"
+          VERSION="${{ github.ref_name }}"
+
+          echo "Creating multi-arch manifest for ${VERSION}"
+
+          # Create manifest for version tag (e.g., v1.0.0)
+          docker buildx imagetools create \
+            --tag "${IMAGE_BASE}:${VERSION}" \
+            "${IMAGE_BASE}:${VERSION}-amd64" \
+            "${IMAGE_BASE}:${VERSION}-arm64"
+
+          # Create manifest for major.minor tag (e.g., v1.0)
+          MAJOR_MINOR=$(echo "${VERSION}" | grep -oP 'v\d+\.\d+')
+          if [ -n "$MAJOR_MINOR" ]; then
+            docker buildx imagetools create \
+              --tag "${IMAGE_BASE}:${MAJOR_MINOR}" \
+              "${IMAGE_BASE}:${VERSION}-amd64" \
+              "${IMAGE_BASE}:${VERSION}-arm64"
+          fi
+
+          # Create manifest for major tag (e.g., v1)
+          MAJOR=$(echo "${VERSION}" | grep -oP 'v\d+')
+          if [ -n "$MAJOR" ]; then
+            docker buildx imagetools create \
+              --tag "${IMAGE_BASE}:${MAJOR}" \
+              "${IMAGE_BASE}:${VERSION}-amd64" \
+              "${IMAGE_BASE}:${VERSION}-arm64"
+          fi
+
+          # Create manifest for latest tag (only if on default branch)
+          if [ "${{ github.ref }}" == "$(git rev-parse --symbolic-full-name refs/remotes/origin/HEAD | sed 's@refs/remotes/origin/@@')" ]; then
+            docker buildx imagetools create \
+              --tag "${IMAGE_BASE}:latest" \
+              "${IMAGE_BASE}:${VERSION}-amd64" \
+              "${IMAGE_BASE}:${VERSION}-arm64"
+          fi
+
+          echo "Multi-arch manifest created successfully!"
+
+      - name: Manifest verification
+        run: |
+          IMAGE_BASE="${{ needs.prepare.outputs.image_base }}"
+          VERSION="${{ github.ref_name }}"
+
+          echo "Verifying manifest for ${IMAGE_BASE}:${VERSION}"
+          docker buildx imagetools inspect "${IMAGE_BASE}:${VERSION}"
