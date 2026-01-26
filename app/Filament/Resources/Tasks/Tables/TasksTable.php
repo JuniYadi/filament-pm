@@ -45,6 +45,15 @@ class TasksTable
                         'success' => 'done',
                     ]),
 
+                TextColumn::make('priority')
+                    ->badge()
+                    ->colors([
+                        'gray' => 'low',
+                        'warning' => 'medium',
+                        'orange' => 'high',
+                        'danger' => 'critical',
+                    ]),
+
                 TextColumn::make('due_date')
                     ->label('Due Date')
                     ->date('M j, Y')
@@ -71,6 +80,14 @@ class TasksTable
                         'in_progress' => 'In Progress',
                         'review' => 'Review',
                         'done' => 'Done',
+                    ]),
+
+                SelectFilter::make('priority')
+                    ->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                        'critical' => 'Critical',
                     ]),
 
                 SelectFilter::make('project')

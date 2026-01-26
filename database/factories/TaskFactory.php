@@ -20,6 +20,7 @@ class TaskFactory extends Factory
             'title' => fake()->sentence(),
             'description' => fake()->paragraph(),
             'status' => fake()->randomElement(['todo', 'in_progress', 'review', 'done']),
+            'priority' => fake()->randomElement(['low', 'medium', 'high', 'critical']),
             'order' => fake()->numberBetween(0, 100),
             'due_date' => fake()->optional()->date(),
         ];
