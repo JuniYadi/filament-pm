@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use App\Models\User;
 use Filament\Actions\AttachAction;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -23,6 +24,12 @@ class MembersRelationManager extends RelationManager
     {
         return $schema
             ->components([
+                \Filament\Forms\Components\Select::make('user_id')
+                    ->label('User')
+                    ->options(User::query()->pluck('name', 'id'))
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 \Filament\Forms\Components\Select::make('role')
                     ->options([
                         'Product Manager' => 'Product Manager',
@@ -32,6 +39,23 @@ class MembersRelationManager extends RelationManager
                     ->default('Developer')
                     ->required(),
             ]);
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['project_id'] = $this->ownerRecord->id;
+
+        return $data;
+    }
+
+    protected function getCreateFormAction(): CreateAction
+    {
+        return CreateAction::configure()
+            ->mutateFormDataUsing(function (array $data): array {
+                $data['project_id'] = $this->ownerRecord->id;
+
+                return $data;
+            });
     }
 
     public function table(Table $table): Table

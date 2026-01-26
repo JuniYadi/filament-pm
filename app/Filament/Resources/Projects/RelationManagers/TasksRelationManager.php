@@ -20,6 +20,11 @@ class TasksRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected function getCreatedByUserId(): int
+    {
+        return (int) auth()->id();
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -52,6 +57,25 @@ class TasksRelationManager extends RelationManager
                     ->numeric()
                     ->default(0),
             ]);
+    }
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['project_id'] = $this->ownerRecord->id;
+        $data['created_by'] = $this->getCreatedByUserId();
+
+        return $data;
+    }
+
+    protected function getCreateFormAction(): CreateAction
+    {
+        return CreateAction::configure()
+            ->mutateFormDataUsing(function (array $data): array {
+                $data['project_id'] = $this->ownerRecord->id;
+                $data['created_by'] = $this->getCreatedByUserId();
+
+                return $data;
+            });
     }
 
     public function table(Table $table): Table
