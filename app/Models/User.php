@@ -119,4 +119,12 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         return $this->hasMany(Document::class, 'created_by');
     }
+
+    /**
+     * Get the user's socialite accounts.
+     */
+    public function socialiteUsers(): HasMany
+    {
+        return $this->hasMany(SocialiteUser::class);
+    }
 }
