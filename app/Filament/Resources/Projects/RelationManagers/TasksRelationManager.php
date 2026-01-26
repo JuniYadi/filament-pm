@@ -10,6 +10,7 @@ use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
@@ -63,6 +64,10 @@ class TasksRelationManager extends RelationManager
                 \Filament\Forms\Components\TextInput::make('order')
                     ->numeric()
                     ->default(0),
+
+                DatePicker::make('due_date')
+                    ->label('Due Date')
+                    ->nullable(),
             ]);
     }
 
@@ -112,6 +117,14 @@ class TasksRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('order')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('due_date')
+                    ->label('Due Date')
+                    ->date('M j, Y')
+                    ->sortable()
+                    ->color(fn ($record) => $record->due_date && (($record->due_date instanceof \Carbon\Carbon ? $record->due_date : \Carbon\Carbon::parse($record->due_date))->isPast()) && $record->status !== 'done' ? 'danger' : null)
+                    ->icon(fn ($record) => $record->due_date && (($record->due_date instanceof \Carbon\Carbon ? $record->due_date : \Carbon\Carbon::parse($record->due_date))->isPast()) && $record->status !== 'done' ? 'heroicon-o-exclamation-triangle' : null)
+                    ->toggleable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')

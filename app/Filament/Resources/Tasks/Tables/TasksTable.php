@@ -45,6 +45,13 @@ class TasksTable
                         'success' => 'done',
                     ]),
 
+                TextColumn::make('due_date')
+                    ->label('Due Date')
+                    ->date('M j, Y')
+                    ->sortable()
+                    ->color(fn ($record) => $record->due_date && (($record->due_date instanceof \Carbon\Carbon ? $record->due_date : \Carbon\Carbon::parse($record->due_date))->isPast()) && $record->status !== 'done' ? 'danger' : null)
+                    ->icon(fn ($record) => $record->due_date && (($record->due_date instanceof \Carbon\Carbon ? $record->due_date : \Carbon\Carbon::parse($record->due_date))->isPast()) && $record->status !== 'done' ? 'heroicon-o-exclamation-triangle' : null),
+
                 SpatieTagsColumn::make('tags')
                     ->toggleable(isToggledHiddenByDefault: false),
 
