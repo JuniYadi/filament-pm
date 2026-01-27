@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
-use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -15,9 +15,9 @@ class InvitationsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'email';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 //
             ]);
