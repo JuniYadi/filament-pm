@@ -23,6 +23,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Laravel\Socialite\Contracts\User as SocialiteUserContract;
+use WatheqAlshowaiter\FilamentStickyTableHeader\StickyTableHeaderPlugin;
+use Guava\FilamentKnowledgeBase\Plugins\KnowledgeBasePlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -105,6 +107,8 @@ class AdminPanelProvider extends PanelProvider
 
                         return $user;
                     }),
+                StickyTableHeaderPlugin::make(),
+                KnowledgeBasePlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,
