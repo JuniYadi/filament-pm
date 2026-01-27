@@ -105,8 +105,8 @@ class MembersRelationManager extends RelationManager
                         $this->ownerRecord->members()->select('user_id')
                     )
                     )
-                    ->form(fn (AttachAction $action) => [
-                        $action->getRecordSelectComponent()
+                    ->schema(fn (AttachAction $action): array => [
+                        $action->getRecordSelect()
                             ->label('Team Member')
                             ->required()
                             ->searchable()
