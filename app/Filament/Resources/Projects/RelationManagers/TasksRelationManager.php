@@ -12,6 +12,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
@@ -68,6 +69,18 @@ class TasksRelationManager extends RelationManager
                 DatePicker::make('due_date')
                     ->label('Due Date')
                     ->nullable(),
+
+                Select::make('priority')
+                    ->options([
+                        'low' => 'Low',
+                        'medium' => 'Medium',
+                        'high' => 'High',
+                        'critical' => 'Critical',
+                    ])
+                    ->default('low')
+                    ->required(),
+
+                SpatieTagsInput::make('tags'),
             ]);
     }
 
@@ -204,7 +217,7 @@ class TasksRelationManager extends RelationManager
                 ]),
             ])
             ->toolbarActions([
-                CreateAction::make(),
+                $this->getCreateFormAction(),
             ])
             ->defaultSort('order', 'asc');
     }
