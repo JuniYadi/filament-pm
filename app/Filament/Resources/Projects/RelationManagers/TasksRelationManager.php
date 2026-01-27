@@ -94,8 +94,8 @@ class TasksRelationManager extends RelationManager
 
     protected function getCreateFormAction(): CreateAction
     {
-        return CreateAction::configure()
-            ->mutateFormDataUsing(function (array $data): array {
+        return CreateAction::make()
+            ->mutateDataUsing(function (array $data): array {
                 $data['project_id'] = $this->ownerRecord->id;
                 $data['created_by'] = $this->getCreatedByUserId();
 
@@ -119,11 +119,12 @@ class TasksRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
-                        'backlog' => 'gray',
-                        'todo' => 'warning',
-                        'in_progress' => 'info',
-                        'review' => 'primary',
-                        'done' => 'success',
+                        'Backlog' => 'gray',
+                        'To Do' => 'warning',
+                        'In Progress' => 'info',
+                        'Review' => 'primary',
+                        'Done' => 'success',
+                        default => 'gray',
                     })
                     ->sortable(),
 
