@@ -18,6 +18,9 @@ services:
       - APP_ENV=production
       - APP_DEBUG=false
       - DB_CONNECTION=sqlite
+      # php-base extensions
+      - PHP_EXT_sqlite=1
+      - PHP_EXT_bcmath=1
     volumes:
       # Persist SQLite database
       - ./database:/var/www/html/database
