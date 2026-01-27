@@ -5,7 +5,25 @@ set -e
 # Docker Entrypoint Script for Filament PM
 # ===============================================
 
+# ===============================================
+# Handle K8s ConfigMap/Secret deployments
+# ===============================================
+# If APP_KEY is provided via environment (K8s Secret), regenerate .env
+# to ensure environment variables take precedence over baked-in .env
+# ===============================================
+if [ -n "$APP_KEY" ]; then
+    echo "Using APP_KEY from environment (K8s Secret detected)"
+
+    # Regenerate .env from .env.example, skipping APP_KEY (use from environment)
+    # Other variables will still be read from .env.example as defaults
+    if [ -f .env.example ]; then
+        grep -v '^APP_KEY=' .env.example > .env 2>/dev/null || cp .env.example .env
+    fi
+fi
+
+# ===============================================
 # Ensure storage directory exists and is writable
+# ===============================================
 mkdir -p /var/www/html/storage/framework/cache
 mkdir -p /var/www/html/storage/framework/sessions
 mkdir -p /var/www/html/storage/framework/views
