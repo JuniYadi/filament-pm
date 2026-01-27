@@ -16,6 +16,10 @@ class ProjectForm
         return $schema
             ->components([
                 Section::make()
+                    ->columns([
+                        'sm' => 1,
+                        'lg' => 2,
+                    ])
                     ->schema([
                         TextInput::make('name')
                             ->required()
@@ -34,8 +38,7 @@ class ProjectForm
 
                         SpatieTagsInput::make('tags')
                             ->columnSpanFull(),
-                    ])
-                    ->columns(2),
+                    ]),
             ]);
     }
 }
