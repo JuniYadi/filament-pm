@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use Filament\Actions\DeleteAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
@@ -71,7 +72,7 @@ class InvitationsRelationManager extends RelationManager
                 //
             ])
             ->recordActions([
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->label('Cancel Invitation')
                     ->successNotificationTitle('Invitation cancelled successfully'),
             ])
