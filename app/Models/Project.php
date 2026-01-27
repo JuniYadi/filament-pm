@@ -51,6 +51,11 @@ class Project extends Model
             ->withTimestamps();
     }
 
+    public function invitations(): HasMany
+    {
+        return $this->hasMany(ProjectInvitation::class);
+    }
+
     /**
      * Get the Kanban statuses for this project.
      * Returns custom workflow if set, otherwise returns default statuses.
