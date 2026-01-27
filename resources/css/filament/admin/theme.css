@@ -1,9 +1,14 @@
-@import '../../../../vendor/filament/filament/resources/css/theme.css';
-@import '../../../../vendor/mansoor/filament-versionable/resources/css/plugin.css';
+@plugin "@tailwindcss/typography";
+
+@import "../../../../vendor/filament/filament/resources/css/theme.css";
+@import "../../../../vendor/mansoor/filament-versionable/resources/css/plugin.css";
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../vendor/mansoor/filament-versionable/resources/**/*.blade.php';
+
+@source '../../../../vendor/guava/filament-knowledge-base/src/**/*';
+@source '../../../../vendor/guava/filament-knowledge-base/resources/views/**/*';
 
 /* Kanban Board Styles */
 .kanban-board {
