@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\SpatieTagsColumn;
+use Filament\Tables\Filters\SpatieTagsFilter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -126,6 +127,8 @@ class TasksTable
                         false: fn (Builder $query) => $query->whereNull('due_date'),
                         blank: fn (Builder $query) => $query,
                     ),
+
+                SpatieTagsFilter::make('tags'),
             ])
             ->recordActions([
                 EditAction::make(),
