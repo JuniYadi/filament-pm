@@ -8,7 +8,6 @@ use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -76,7 +75,6 @@ class BlockingTasksRelationManager extends RelationManager
             ->recordActions([
                 DetachAction::make()
                     ->label('Remove Dependency'),
-                ViewAction::make(),
             ])
             ->headerActions([
                 AttachAction::make()
