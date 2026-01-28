@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\Tags\HasTags;
 
 class Task extends Model
@@ -65,6 +66,60 @@ class Task extends Model
             name: 'documentable',
             table: 'documentables',
         );
+    }
+
+    /**
+     * Tasks that this task blocks (must complete before this task can start).
+     */
+    public function blockingTasks(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Task::class,
+            'task_dependencies',
+            'blocked_task_id',
+            'blocking_task_id'
+        )->withTimestamps();
+    }
+
+    /**
+     * Tasks that block this task (must complete before this task can start).
+     */
+    public function blockedByTasks(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Task::class,
+            'task_dependencies',
+            'blocking_task_id',
+            'blocked_task_id'
+        )->withTimestamps();
+    }
+
+    /**
+     * Check if this task is blocked by any incomplete tasks.
+     */
+    public function isBlocked(): bool
+    {
+        return $this->blockedByTasks()
+            ->where('status', '!=', 'done')
+            ->exists();
+    }
+
+    /**
+     * Get count of blocking tasks that are not yet completed.
+     */
+    public function getBlockingCountAttribute(): int
+    {
+        return $this->blockedByTasks()
+            ->where('status', '!=', 'done')
+            ->count();
+    }
+
+    /**
+     * Accessor for title with project name.
+     */
+    public function getTitleWithProjectAttribute(): string
+    {
+        return $this->title . ($this->project ? ' (' . $this->project->name . ')' : '');
     }
 
     /**
