@@ -2,14 +2,16 @@
 
 namespace App\Filament\Resources\Documents\Schemas;
 
+use App\Models\DocumentTemplate;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
@@ -28,6 +30,37 @@ class DocumentForm
 
                         Section::make()
                             ->schema([
+                                Select::make('template_id')
+                                    ->label('Use Template')
+                                    ->placeholder('Select a template...')
+                                    ->options(function () {
+                                        return DocumentTemplate::query()
+                                            ->with('user')
+                                            ->get()
+                                            ->mapWithKeys(function ($template) {
+                                                $prefix = $template->is_system ? '📋 ' : '👤 ';
+                                                $user = $template->user?->name ?? 'System';
+                                                $label = "{$prefix}{$template->name} ({$user})";
+                                                return [$template->id => $label];
+                                            });
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->live()
+                                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                        if ($state) {
+                                            $template = DocumentTemplate::find($state);
+                                            if ($template) {
+                                                $set('content', $template->render());
+                                                $currentTitle = $get('title');
+                                                if (empty($currentTitle)) {
+                                                    $set('title', $template->name);
+                                                }
+                                            }
+                                        }
+                                    })
+                                    ->helperText('Templates help you get started with pre-defined content'),
+
                                 TextInput::make('title')
                                     ->required()
                                     ->maxLength(255)
