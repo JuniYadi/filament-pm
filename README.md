@@ -17,6 +17,7 @@ A self-hosted project management and documentation platform built as a lightweig
 - **Project Management**
   - Create and manage projects with customizable status workflows
   - Add team members with role-based access (Product Manager, Developer, Viewer)
+  - Project invitation system with email links and expiration
   - Track tasks with Kanban-style status management
 
 - **Task Management**
@@ -24,13 +25,17 @@ A self-hosted project management and documentation platform built as a lightweig
   - Assign tasks to team members
   - Track task status (Backlog, To Do, In Progress, Review, Done)
   - Add comments for collaboration
+  - Activity logging (status changes, assignments, deletions)
+  - Bulk operations (change status, reassign, delete)
 
 - **Document Management**
   - Create standalone or project-linked documents
   - Markdown support for rich content
   - AI-powered semantic search using OpenAI embeddings
+  - Document versioning with restore capability
 
-- **Role-Based Access Control**
+- **Authentication & Security**
+  - Socialite integration for social login (Google, GitHub, etc.)
   - Powered by Filament Shield and Spatie Laravel Permission
   - Granular permissions for Projects, Tasks, Documents, and Comments
   - Three default roles: Product Manager, Developer, Viewer
@@ -52,12 +57,12 @@ A self-hosted project management and documentation platform built as a lightweig
 | **Task Dependencies** | ✅ Blocking/linked issues | ❌ N/A | ❌ Not implemented | Roadmap: Task dependencies |
 | **Kanban Board** | ✅ Per-project Kanban | ❌ N/A | ✅ Per-project + Global Kanban | **Filament PM advantage**: Global view across all projects |
 | **Task Search** | ✅ Advanced JQL | ✅ Basic search | ✅ Database query | Roadmap: Enhanced search with filters |
-| **Task Priorities** | ✅ Customizable priorities | ❌ N/A | ❌ Not implemented | Roadmap: Priority field |
-| **Labels/Tags** | ✅ Full label system | ✅ Labels | ❌ Not implemented | Roadmap: Tag system |
+| **Task Priorities** | ✅ Customizable priorities | ❌ N/A | 🔶 Enum exists, UI integration planned | See issue #69 for progress |
+| **Labels/Tags** | ✅ Full label system | ✅ Labels | ❌ Not implemented | Roadmap: Tag system (see issue #71) |
 | **Task Comments** | ✅ Comments + mentions | ✅ Comments | ✅ Comments via RelationManager | Planned: Direct comments on task view |
 | **Attachments** | ✅ File attachments | ✅ Attachments | 🔶 Via documents | Can link documents to tasks |
-| **Bulk Operations** | ✅ Bulk edit/move | ✅ Bulk operations | ❌ Not implemented | Roadmap: Bulk actions |
-| **Task History** | ✅ Full audit trail | ✅ Page history | 🔶 Laravel timestamps | Planned: Detailed activity log |
+| **Bulk Operations** | ✅ Bulk edit/move | ✅ Bulk operations | ✅ Bulk status, reassign, delete | **Already implemented!** |
+| **Task History** | ✅ Full audit trail | ✅ Page history | ✅ Activity log (status, assignee, deletion) | **Already implemented!** |
 
 ### Collaboration & Documentation
 
@@ -66,7 +71,7 @@ A self-hosted project management and documentation platform built as a lightweig
 | **Documents/Wiki** | 🔶 Basic wiki | ✅ Full documentation | ✅ Documents with content | Confluence: Page hierarchy; Filament PM: Flat with linking |
 | **Rich Text Editor** | ✅ Advanced | ✅ Advanced | ✅ Filament forms (markdown planned) | Roadmap: Rich text with markdown support |
 | **AI Semantic Search** | ❌ Requires expensive addon | ❌ Requires addon | ✅ **Built-in with embeddings** | **Filament PM unique advantage**: Vector similarity search |
-| **Document Versioning** | ✅ Page versions | ✅ Full history | 🔶 Basic timestamps | Planned: Full version history |
+| **Document Versioning** | ✅ Page versions | ✅ Full history | ✅ Version history + restore | **Already implemented!** |
 | **Real-time Collaboration** | ✅ Concurrent editing | ✅ Real-time | ❌ Not implemented | Roadmap: Live collaboration |
 | **Document Templates** | ✅ Blueprints | ✅ Templates | ❌ Not implemented | Roadmap: Document templates |
 | **Code Blocks** | ✅ Syntax highlighting | ✅ Code blocks | ❌ Not implemented | Planned: Markdown code blocks |
@@ -81,9 +86,11 @@ A self-hosted project management and documentation platform built as a lightweig
 | Feature | Jira | Confluence | Filament PM | Notes |
 |---------|------|------------|-------------|-------|
 | **User Roles & Permissions** | ✅ Granular permissions | ✅ Space permissions | ✅ Role-based (Filament Shield) | Filament PM: Product Manager, Developer, Viewer |
-| **Project-Level Access** | ✅ Project permissions | ✅ Space restrictions | ✅ Project membership | Filament PM: Member-based access control |
+| **Project-Level Access** | ✅ Project permissions | ✅ Space restrictions | ✅ Project membership + invitations | Filament PM: Member-based access control |
+| **Project Invitations** | ✅ Email invitations | ✅ Email invitations | ✅ Invitation system with expiration | **Already implemented!** |
 | **Granular Permissions** | ✅ Per-issue security | ✅ Page restrictions | ✅ Policies per resource | Filament PM: Policy-based authorization |
 | **Two-Factor Authentication** | ✅ 2FA available | ✅ 2FA available | ✅ Via Fortify/Spark | Requires configuration |
+| **Social Login** | ✅ Available | ✅ Available | ✅ Socialite integration | **Already implemented!** |
 | **SSO/SAML Integration** | ✅ Enterprise tier | ✅ Enterprise tier | 🔶 Requires setup | Roadmap: Native SSO integration |
 | **Audit Logs** | ✅ Full audit logs | ✅ Activity logs | 🔶 Basic timestamps | Planned: Detailed audit trail |
 | **Self-Hosted Security** | ✅ Data Center (expensive) | ✅ Data Center (expensive) | ✅ Full control | **Filament PM advantage**: You control security |
@@ -393,6 +400,9 @@ app/
 │   ├── Document.php     # Documents with AI embeddings
 │   ├── Comment.php      # Task discussions
 │   └── User.php         # Users with roles and relationships
+├── Enums/               # PHP 8.1 enums
+│   ├── TaskStatus.php   # Task status enum with translations & colors
+│   └── TaskPriority.php # Task priority enum (UI integration pending)
 ├── Policies/            # Authorization policies
 ├── Services/            # Business logic
 │   └── EmbeddingService.php  # OpenAI integration
