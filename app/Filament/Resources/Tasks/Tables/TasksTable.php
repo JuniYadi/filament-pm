@@ -26,6 +26,11 @@ class TasksTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('description')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->limit(50),
+
                 TextColumn::make('project.name')
                     ->label('Project')
                     ->searchable()
@@ -102,6 +107,13 @@ class TasksTable
                     ->searchable()
                     ->preload()
                     ->label('Assigned To')
+                    ->placeholder('All Users'),
+
+                SelectFilter::make('created_by')
+                    ->relationship('createdBy', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Creator')
                     ->placeholder('All Users'),
 
                 TernaryFilter::make('has_due_date')
