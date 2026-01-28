@@ -126,6 +126,9 @@ class TasksTable
                         false: fn (Builder $query) => $query->whereNull('due_date'),
                         blank: fn (Builder $query) => $query,
                     ),
+
+                // Note: Tags can be searched using the global search on the tags column
+                // The Spatie Tags plugin doesn't provide a Filter component in v4
             ])
             ->recordActions([
                 EditAction::make(),
