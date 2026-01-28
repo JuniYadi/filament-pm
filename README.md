@@ -24,6 +24,7 @@ A self-hosted project management and documentation platform built as a lightweig
   - Create tasks within projects
   - Assign tasks to team members
   - Track task status (Backlog, To Do, In Progress, Review, Done)
+  - Task priorities (Low, Medium, High, Critical) with color-coded badges
   - Add comments for collaboration
   - Activity logging (status changes, assignments, deletions)
   - Bulk operations (change status, reassign, delete)
@@ -57,7 +58,7 @@ A self-hosted project management and documentation platform built as a lightweig
 | **Task Dependencies** | ✅ Blocking/linked issues | ❌ N/A | ❌ Not implemented | Roadmap: Task dependencies |
 | **Kanban Board** | ✅ Per-project Kanban | ❌ N/A | ✅ Per-project + Global Kanban | **Filament PM advantage**: Global view across all projects |
 | **Task Search** | ✅ Advanced JQL | ✅ Basic search | ✅ Database query | Roadmap: Enhanced search with filters |
-| **Task Priorities** | ✅ Customizable priorities | ❌ N/A | 🔶 Enum exists, UI integration planned | See issue #69 for progress |
+| **Task Priorities** | ✅ Customizable priorities | ❌ N/A | ✅ Low, Medium, High, Critical | **Already implemented!** |
 | **Labels/Tags** | ✅ Full label system | ✅ Labels | ❌ Not implemented | Roadmap: Tag system (see issue #71) |
 | **Task Comments** | ✅ Comments + mentions | ✅ Comments | ✅ Comments via RelationManager | Planned: Direct comments on task view |
 | **Attachments** | ✅ File attachments | ✅ Attachments | 🔶 Via documents | Can link documents to tasks |
