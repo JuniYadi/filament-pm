@@ -1,8 +1,6 @@
 <?php
 
 // config for Guava/KnowledgeBasePanel
-use Guava\FilamentKnowledgeBase\Enums\NodeType;
-
 return [
     'flatfile-model' => \Guava\FilamentKnowledgeBase\Models\FlatfileNode::class,
 
@@ -12,8 +10,9 @@ return [
     ],
 
     'icons' => [
-        NodeType::Documentation->value => 'heroicon-o-document',
-        NodeType::Link->value => 'heroicon-o-link',
-        NodeType::Group->value => null,
+        // Icons configuration - commented out due to package compatibility
+        // 'documentation' => 'heroicon-o-document',
+        // 'link' => 'heroicon-o-link',
+        // 'group' => null,
     ],
 ];
