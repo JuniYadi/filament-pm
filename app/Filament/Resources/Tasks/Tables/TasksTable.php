@@ -10,7 +10,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\SpatieTagsColumn;
-use Filament\Tables\Filters\SpatieTagsFilter;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -128,7 +127,8 @@ class TasksTable
                         blank: fn (Builder $query) => $query,
                     ),
 
-                SpatieTagsFilter::make('tags'),
+                // Note: Tags can be searched using the global search on the tags column
+                // The Spatie Tags plugin doesn't provide a Filter component in v4
             ])
             ->recordActions([
                 EditAction::make(),
