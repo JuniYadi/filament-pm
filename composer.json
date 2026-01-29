@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "aws/aws-sdk-php": "*",
         "bezhansalleh/filament-shield": "^4.0",
         "dutchcodingcompany/filament-socialite": "^3.1",
         "filament/filament": "^4.0",
@@ -15,6 +16,7 @@
         "laravel/framework": "^12.0",
         "laravel/socialite": "^5.24",
         "laravel/tinker": "^2.10.1",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "mansoor/filament-versionable": "^4.0",
         "openai-php/client": "^0.18.0",
         "owenvoke/blade-fontawesome": "*",
